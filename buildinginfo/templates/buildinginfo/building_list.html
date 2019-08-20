@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="py-2" style="display: table; width: 100%; min-height: calc(100vh  - 85px);">
+  <div class="pl-2 mb-2">
+    <a class="btn btn-secondary" href="{% url 'buildinginfo:building_new' %}" role="button" title="새로운 빌딩을 등록하세요."><i class="fas fa-plus-circle fa-x"></i><span>&nbsp</span><span>새 빌딩 등록하기</span></a>
+  </div>
+  {% for object in object_list  %}
+    <div class="building-card float-left border m-2 p-2 bg-white centering rounded" style="width: 15em; height: 20em;">
+      {% if object.photo %}
+        <img src="{{ object.photo.url }}" class="mx-auto d-block p-3" style="max-height: 100%; max-width: 100%;" alt="">
+      {% else %}
+        <p class="text-center">No Photo</p>
+      {% endif %}
+      <div class="position-absolute row align-items-center rounded p-2" style="width: 90%; top: 1em; right: 25px; background-color: rgba(240, 193, 193, 0.9); font-size: 13px;">
+        <div class="col-6 px-2 font-weight-lighter text-right">
+          절감률 11.3%
+        </div>
+        <div class="col-6 px-0">
+          <hr class="rounded bg-white my-2" style="width: 100%; height: 3px;">
+          <hr class="rounded my-2" style="position: absolute; top: 0; width: 50%; background-color: rgb(221, 23, 23); height: 3px;">
+        </div>
+        <div class="col-6 px-2 font-weight-lighter text-right">
+          절감률 11.3%
+        </div>
+        <div class="col-6 px-0">
+          <hr class="rounded bg-white my-2" style="width: 100%; height: 3px;">
+          <hr class="rounded my-2" style="position: absolute; top: 0; width: 50%; background-color: rgb(221, 23, 23); height: 3px;">
+        </div>
+      </div>
+      <span class="building-name text-white w-100 h-100">
+        <a class="text-decoration-none centering w-100 h-100 text-white text-weight-bold" href="{% url 'buildinginfo:building_detail' pk=object.pk %}">{{ object.name }}</a>
+      </span>
+    </div>
+  {% endfor %}
+</div>
+
+<style>
+.building-card {
+  position: relative;
+}
+
+.building-name {
+  position: absolute;
+  font-size: 30px;
+  background-color: rgba(0, 0, 0, 0.7);
+  visibility: hidden;
+}
+
+.building-card:hover .building-name {
+  visibility: visible;
+}
+
+
+
+
+</style>
+
+{% endblock %}

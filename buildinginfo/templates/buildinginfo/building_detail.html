@@ -1,0 +1,406 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+
+<div class="row" style="min-height: calc(100vh - 56px - 25px);">
+
+  <!-- 기본정보 영역 -->
+  <div class="col-2 pr-0 pb-2">
+    {% include 'buildinginfo/basic_information.html' %}
+  </div>
+
+  <!-- 상세정보 영역 -->
+  <div class="col-10 pb-2">
+    <!-- 메뉴탭 영역 -->
+    {% include 'buildinginfo/building_detail_menu.html' %}
+    
+    <!-- 대시보드 영역 -->
+    <div class="row">
+      <div class="col py-2">
+        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#work-progress" aria-expanded="true" aria-controls="work-progress">
+          작업상황
+        </button>
+      </div>
+    </div>
+    <div class="row collapse show" id="work-progress">
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-tools fa-5x my-2"></i>
+            <h4>전체 요청</h4>
+            <h3 class="border-bottom pb-2">15</h3>
+            <h6 class="font-weight-light">2019년 전체 의뢰수</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-tasks fa-5x my-2"></i>
+            <h4>진행중</h4>
+            <h3 class="border-bottom pb-2">5</h3>
+            <h6 class="font-weight-light">aaaa</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-2">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="far fa-check-circle fa-5x my-2"></i>
+            <h4>완료</h4>
+            <h3 class="border-bottom pb-2">10</h3>
+            <h6 class="font-weight-light">50% 완료</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col py-2">
+        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#basic-information" aria-expanded="true" aria-controls="basic-information">
+          기본정보
+        </button>
+      </div>
+    </div>
+    <div class="row collapse show" id="basic-information">
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-map-marker-alt fa-5x my-2"></i>
+            <h4>위치</h4>
+            <h3 class="border-bottom pb-2">서울</h3>
+            <h6 class="font-weight-light">기상관측소: 102</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-building fa-5x my-2"></i>
+            <h4>용도</h4>
+            <h3 class="border-bottom pb-2">오피스</h3>
+            <h6 class="font-weight-light">aaaa</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-expand fa-5x my-2"></i>
+            <h4>면적</h4>
+            <h3 class="border-bottom pb-2">{{ building_obj.total_area|floatformat:0|intcomma }}m2</h3>
+            <h6 class="font-weight-light">aaaa</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-cogs fa-5x my-2"></i>
+            <h4>관리사</h4>
+            <h3 class="border-bottom pb-2">{{ building_obj.fm }}</h3>
+            <h6 class="font-weight-light">aaaa</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-2">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-cube fa-5x my-2"></i>
+            <h4>외장종류</h4>
+            <h3 class="border-bottom pb-2">{{ building_obj.get_wall_display }}</h3>
+            <h6 class="font-weight-light">aaaa</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row py-2">
+      <div class="col">
+        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#statistics" aria-expanded="true" aria-controls="statistics">
+        에너지 통계
+        </button>
+      </div>
+    </div>
+    <div class="row collapse show" id="statistics">
+      <div class="col-12 mb-2">
+        <div class="p-2 bg-white centering zoom zoom-0">
+          <div class="text-center">
+            <i class="fas fa-chart-bar fa-5x my-2"></i><i class="fas fa-calendar-alt fa-2x ml-1"></i>
+            <h4>2019 누적 사용량</h4>
+            <h3 class="border-bottom pb-2">1000 (100%)</h3>
+            <h6 class="font-weight-light">2018 누적 사용량: aaaa</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 mb-2 pr-0">
+        <div class="p-2 bg-white centering zoom zoom-1">
+          <div class="text-center">
+            <i class="fas fa-chart-bar fa-5x my-2"></i><i class="fas fa-calendar-minus fa-2x ml-1"></i>
+            <h4>평일 사용량</h4>
+            <h3 class="border-bottom pb-2">1000 (100%)</h3>
+            <h6 class="font-weight-light">2018 누적 사용량: aaaa</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 mb-2">
+        <div class="p-2 bg-white centering zoom zoom-1">
+          <div class="text-center">
+            <i class="fas fa-chart-bar fa-5x my-2"></i><i class="fas fa-calendar-times fa-2x ml-1"></i>
+            <h4>휴일 사용량</h4>
+            <h3 class="border-bottom pb-2">1000 (100%)</h3>
+            <h6 class="font-weight-light">2018 누적 사용량: aaaa</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-wind fa-2x my-2"></i>
+            <i class="fas fa-thermometer-three-quarters fa-5x my-2"></i>
+            <h4>냉방도일</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-fire-alt fa-2x my-2"></i>
+            <i class="far fa-thermometer-quarter fa-5x my-2"></i>
+            <h4>난방도일</h4>
+            <h3 class="border-bottom pb-2">1000 (25%)</h3>
+            <h6 class="font-weight-light">냉방계수: 1.4</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-2">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-wind fa-2x my-2"></i>
+            <i class="fas fa-fire-alt fa-2x my-2"></i>
+            <i class="fas fa-thermometer-half fa-5x my-2"></i>
+            <h4>도일 합계</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row py-2">
+      <div class="col">
+        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#useage-level" aria-expanded="true" aria-controls="useage-level">
+          에너지 소비 구성
+        </button>
+      </div>
+    </div>
+    <div class="row collapse show" id="useage-level">
+      <div class="col-12 mb-2">
+        <div class="p-2 bg-white centering zoom zoom-0">
+          <div class="text-center">
+            <i class="fas fa-bolt fa-5x my-2"></i>
+            <h4>전체 사용량</h4>
+            <h3 class="border-bottom pb-2">1000 (100%)</h3>
+            <h6 class="font-weight-light">aaaa</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-minus fa-5x my-2"></i>
+            <h4>기본 사용량</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-wind fa-5x my-2"></i>
+            <h4>냉방 사용량</h4>
+            <h3 class="border-bottom pb-2">1000 (25%)</h3>
+            <h6 class="font-weight-light">냉방계수: 1.4</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col mb-2">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-fire-alt fa-5x my-2"></i>
+            <h4>난방 사용량</h4>
+            <h3 class="border-bottom pb-2">1000 (25%)</h3>
+            <h6 class="font-weight-light">난방계수: 2.4</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row py-2">
+      <div class="col">
+        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#characteristic" aria-expanded="true" aria-controls="characteristic">
+          에너지 소비 특성
+        </button>
+      </div>
+    </div>
+    <div class="row collapse show" id="characteristic">
+      <div class="col-3 pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+              <div class="icon-stack">
+                <i class="fas fa-square icon-stack-5x"></i>
+                <i class="fas fa-bolt icon-stack-3x text-white"></i>
+              </div>
+            <h4>전체 사용량 밀도</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <div class="icon-stack">
+              <i class="fas fa-square icon-stack-5x"></i>
+              <i class="fas fa-minus icon-stack-3x text-white"></i>
+            </div>
+            <h4>기본 사용량 밀도</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <div class="icon-stack">
+              <i class="fas fa-square icon-stack-5x"></i>
+              <i class="fas fa-wind icon-stack-3x text-white"></i>
+            </div>
+            <h4>냉방 사용량 밀도</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 mb-2">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <div class="icon-stack">
+              <i class="fas fa-square icon-stack-5x"></i>
+              <i class="fas fa-fire-alt icon-stack-3x text-white"></i>
+            </div>
+            <h4>난방 사용량 밀도</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-5x my-2">&#8451;</i>
+            <h4>밸런스포인트</h4>
+            <h3 class="border-bottom pb-2">{{ analysis.0.balance_point }}</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-arrow-alt-circle-down fa-5x my-2"></i>
+            <h4>절감가능성(%)</h4>
+            <h3 class="border-bottom pb-2">{{ analysis.0.saving_potential }}</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 pr-0">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-wind fa-4x align-top my-2"></i><i class="fas fa-5x my-2">&lrtri;</i>
+            <h4>냉방계수</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+      <div class="col-3 mb-2">
+        <div class="p-2 bg-white centering zoom zoom-2">
+          <div class="text-center">
+            <i class="fas fa-fire-alt fa-4x align-top my-2"></i><i class="fas fa-5x my-2">&lrtri;</i>
+            <h4>난방계수</h4>
+            <h3 class="border-bottom pb-2">1000 (50%)</h3>
+            <h6 class="font-weight-light">평균 사용량: 100</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('.toggle-active').click(function() {
+  $(this).toggleClass('active');
+})
+</script>
+
+<style>
+.zoom {
+  transition: transform .2s;
+}
+.zoom-0:hover {
+  transform: scale(1.008, 1.02);
+}
+.zoom-1:hover {
+  transform: scale(1.015, 1.02);
+}
+.zoom-2:hover {
+  transform: scale(1.02, 1.02);
+}
+
+.icon-stack {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 6em;
+  height: 6em;
+  /* line-height: 4em; */
+  margin: 0 auto;
+  vertical-align: middle;
+}
+.icon-stack-1x,
+.icon-stack-2x,
+.icon-stack-3x,
+.icon-stack-4x,
+.icon-stack-5x {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+.icon-stack-1x {
+  line-height: inherit;
+}
+.icon-stack-2x {
+  font-size: 2em;
+}
+.icon-stack-3x {
+  font-size: 3em;
+}
+.icon-stack-4x {
+  font-size: 4em;
+}
+.icon-stack-5x {
+  font-size: 5em;
+}
+</style>
+
+{% endblock %}

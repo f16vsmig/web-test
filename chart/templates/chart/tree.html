@@ -1,0 +1,59 @@
+<script>
+  // Treeview에 사용되는 트리 데이터
+  var dataPointTree = [
+    {% for building in building_list %}
+    {
+      depth: 1,
+      type: "branch",
+      icon: "fas fa-building",
+      text: "{{ building.name }}",
+      id: "{{ building.pk }}",
+      color: '#797D7F',
+      nodes: [
+        {
+          depth: 2,
+          type: "branch",
+          text: "{{ ismart_name }}",
+          // parent: "{{ building.name }}",
+          id: "{{ building.pk }}-{{ building.name }}-{{ ismart_name }}",
+          color: '#797D7F',
+          nodes: [
+            {% for ismart in ismart_fields %}
+            {
+              depth: 3,
+              type: "endpoint",
+              // grandParent: "{{ building.name }}",
+              // parent: "{{ ismart_name }}",
+              text: "{{ ismart }}",
+              // name: "{{ building.name }}-{{ ismart_name }}-{{ ismart }}",
+              id: "{{ building.pk }}-{{ building.name }}-{{ ismart_name }}-{{ ismart }}"
+            },
+            {% endfor %}
+          ],
+        },
+        {
+          depth: 2,
+          type: "branch",
+          text: "{{ weather_name }}",
+          // parent: "{{ building.name }}",
+          id: "{{ building.pk }}-{{ building.name }}-{{ weather_name }}",
+          color: '#797D7F',
+          nodes: [
+            {% for weather in weather_fields %}
+            {
+              depth: 3,
+              type: "endpoint",
+              // grandParent: "{{ building.name }}",
+              // parent: "{{ weather_name }}",
+              text: "{{ weather }}",
+              // name: "{{ weather.weather_station }}-{{ weather_name }}-{{ weather }}",
+              id: "{{ building.pk }}-{{ building.name }}-{{ weather_name }}-{{ weather }}",
+            },
+            {% endfor %}
+          ],
+        },
+      ],
+    },
+    {% endfor %}
+  ];
+</script>

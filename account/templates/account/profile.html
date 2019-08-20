@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="content">
+        <p>{{ object.id }}</p>
+        <p>{{ object.nickname }}</p>
+        <p>{{ object.email }}</p>
+        {% if request.user == object %}
+            <p><a href="{% url 'account:password_change' %}">비밀번호 변경</a></p>
+        {% endif %}
+</div>
+
+{% endblock %}

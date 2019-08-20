@@ -1,0 +1,58 @@
+{% load static %}
+<html>
+
+<head>
+  <title>building energy audit system</title>
+
+  <link rel="stylesheet" href="{% static 'css/energyaudit.css' %}?ver=5.9">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
+  <link rel="shortcut icon" href="{% static 'favicon/favicon.png' %}" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
+
+</head>
+
+<body>
+  <div class="wrap">
+    <nav class="header">
+      <ul class="left">
+        <li><a href="{% url 'energyaudit:home' %}">Home</a></li>
+        <li><a href="{% url 'energyaudit:buildings' %}">Buildings</a></li>
+        <li><a href="{% url 'energyaudit:calendar' %}">Schedule</a></li>
+        <li><a href="{% url 'energyaudit:charts' %}">Charts</a></li>
+        <li><a href="{% url 'energyaudit:plot' %}">Plot</a></li>
+      </ul>
+
+      {% if user.is_authenticated %}
+      <ul class="right">
+        <li>Welcome, {{ user.username }} <a href="{% url 'energyaudit:logout' %}">(logout)</a></li>
+      </ul>
+      {% else %}
+      <ul class="right">
+        <li>Welcome, new user. Please <a href="{% url 'energyaudit:signin' %}">log in.</a></li>
+      </ul>
+      {% endif %}
+    </nav>
+
+    <div class="container">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    <footer class="footer">
+      <div>
+        <p>&copy; 2018 Hakyoung All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+</body>
+
+</html>

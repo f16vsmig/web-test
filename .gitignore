@@ -1,0 +1,8 @@
+*.pyc
+__pycache__
+venv
+migrations
+media
+db.sqlite3
+.DS_Store
+secrets.json

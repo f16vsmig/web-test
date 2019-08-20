@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="py-2" style="display: table; width: 100%; min-height: calc(100vh  - 85px);">
+  <div class="align-top pr-2 border-right" style="display: table-cell; width: 180px;">
+    {% include 'buildinginfo/sidebar.html' %}
+  </div>
+  <div class="mx-auto align-top px-2 m-2" style="display: table-cell">
+    <div class="align-top pl-2 mb-2">
+      <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+        {{ form.as_p }}
+        <input class="btn btn-dark btn-lg btn-block" type="submit" value="저장">
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

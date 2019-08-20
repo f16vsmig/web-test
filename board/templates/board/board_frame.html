@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load board_extras %}
+
+<div class="py-2" style="display: table; width: 100%; min-height: calc(100vh  - 85px);">
+
+  <!-- 사이드바 영역 -->
+  <div class="align-top pr-2 border-right" style="display: table-cell; width: 180px;">
+    {% url 'board:notice_main' board_name='notice' as notice_url %}
+    {% if request.path == notice_url %}
+      {% include 'buildinginfo/sidebar.html' %}
+    {% else %}
+      {% include 'board/communication_sidebar.html' %}
+    {% endif %}
+  </div>
+
+  <!-- 게시판 영역 -->
+  <div class="mx-auto align-top px-2 m-2" style="display: table-cell">
+    <div class="float-left">
+      <h2 class="font-weight-lighter pl-1">{{ object_list.0.get_board_name_display }}</h2>
+    </div>
+
+    <!-- 툴박스 영역 -->
+    <div class="clearfix">
+      <div class="float-right text-right pb-1">
+        <a class="btn btn-danger px-2" href="{% url 'board:post_create' %}?board={{ board_name }}" title="새글"><i class="fas fa-pen"></i></a>
+        <span class="btn-group mx-1">
+          <button class="btn dropdown-toggle btn-danger" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="필터"><i class="fas fa-filter"></i></button>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">등록일순</a>
+            <a class="dropdown-item" href="#">조회순</a>
+            <a class="dropdown-item" href="#">댓글순</a>
+            <div class="dropdown-divider"></div>
+            {% for building in building_list %}
+              <a class="dropdown-item" href="{% url 'buildinginfo:building_detail' pk=building.pk %}">{{ building.name }}</a>
+            {% endfor %}
+          </div>
+        </span>
+      </div>
+    </div>
+
+    <!-- 본문 영역 -->
+    {% if detail %}
+      <div class="bg-white clearfix mt-2 px-1 py-3">
+        {% include "board/detail.html" %}
+      </div>
+
+      <!-- 댓글 영역 -->
+      <div class="clearfix bg-white mb-3 p-2">
+        {% include "board/comment.html" %}
+      </div>
+    {% endif %}
+
+    <!-- 글목록 영역 -->
+    {% include "board/list.html" %}
+  </div>
+</div>
+
+
+{% endblock %}

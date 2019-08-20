@@ -1,0 +1,89 @@
+<!-- {% extends 'energyaudit/base.html' %}
+
+{% block content %} -->
+<!-- {% load staticfiles%} -->
+
+<!-- <link rel="stylesheet" href="{% static 'css/energyaudit.css' %}?ver=5.4"> -->
+
+<div class="content">
+  <!--
+{% if messages %}
+  {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-danger {{ message.tags }}"{% endif %}>
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+{% if form.errors %}
+    {% for field in form %}
+        {% for error in field.errors %}
+            <div class="alert alert-danger">
+                {{ field.label }} <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">
+            {{ field.label }} <strong>{{ error|escape }}</strong>
+        </div>
+    {% endfor %}
+{% endif %} -->
+
+
+  <div class="form">
+    <div class="clearfix" style="margin-bottom: 20px;"><button type="button" class="close right" aria-label="Close"><span aria-hidden="true">&times;</span></div>
+
+    <form method="post" class="form" id="event-form">
+      {% csrf_token %}
+      {{ form }}
+      <div class="clearfix" style="margin-top: 20px;">
+        {% if '/event/new/' in request.path %}
+        <button type="submit" name="save" class="btn btn-info right"> Save </button>
+        {% endif %}
+        {% if '/event/edit/' in request.path %}
+        <button type="submit" value="{{ pk }}" name="update" class="btn btn-info right"> Save </button>
+        <button type="submit" value="{{ pk }}" name="delete" class="btn btn-info right" onclick="return confirm('Delete event?')"> Delete </button>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="{% static 'script/jquery.datetimepicker.css' %}">
+<script type="text/javascript" src="{% static 'script/jquery.js' %}"></script>
+<script type="text/javascript" src="{% static 'script/build/jquery.datetimepicker.full.min.js' %}"></script>
+
+
+<script>
+  jQuery('.datetimepicker').datetimepicker({
+    format: 'Y-m-d H:00:00',
+  });
+</script>
+
+<script>
+  $("#event-form").submit(function() {
+    this.submit();
+    $(".popup-layer").hide(function() {
+      $(".popup-content").empty();
+      window.location.reload();
+    });
+  });
+
+  $(".close").click(function() {
+    $(".popup-layer").hide()
+    $(".popup-content").empty();
+    $("body").removeClass("overflow-hidden"); //overflow-hidden 해제(스크롤 해제)
+    $(".wrap").css({
+      "position": "relative", //최상위 div 고정해제
+      "top": "0" //top값 해제
+    });
+    $("body").scrollTop(scrollHeight); //현재 스크롤된값=보이는화면
+
+  });
+</script>
+
+
+
+
+<!-- {% endblock %} -->

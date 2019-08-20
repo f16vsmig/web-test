@@ -1,0 +1,10 @@
+<div class="list-group" style="width: 170px;">
+    {% url 'board:freeboard_main' as url_freeboard %}
+    <a href="{% url 'board:notice_main' board_name='freeboard' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if board_name == 'freeboard' %}active{% endif %} ">
+        자유게시판
+    </a>
+    {% url 'scheduler:calendar' as url_scheduler_calendar %}
+    <a href="{{ url_scheduler_calendar }}" class="list-group-item list-group-item-action {% if request.path == url_scheduler_calendar %}active{% endif %}">
+        Q&A
+    </a>
+</div>

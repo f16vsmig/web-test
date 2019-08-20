@@ -1,0 +1,313 @@
+{% extends 'energyaudit/base.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="content" style="width: 100%;">
+  <div class="float-left" style="width: 20%;">
+    <h3 style="margin-bottom: 20px;">Building List</h3>
+    <div class="h-75 overflow-auto" id="dataPointTree"></div>
+    <style type="text/css">
+      #dataPointTree li {
+        height: 30px;
+        padding: 5px 15px;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
+  </div>
+
+  <div class="float-right" style="width: 75%;">
+    <div>
+      <div class="row">
+        <div class="col-4">
+          <label for="start_day">Start day:</label>
+          <input class="datepicker" id="start_day" name="start_day" required type="text" style="width: 130px;">
+        </div>
+        <div class="col-4">
+          <label for="end_day">End day:</label>
+          <input class="datepicker" id="end_day" name="end_day" required type="text" style="width: 130px;">
+        </div>
+        <div class="col-2">
+          <button type="bytton" class="btn btn-secondary btn-sm" id="findId">Load</button>
+        </div>
+      </div>
+      <div class="w-100 h-75 border" id="charts_container"></div>
+    </div>
+  </div>
+
+</div>
+
+<script src="{% static 'bootstrap-treeview-1.2.0/bootstrap-treeview.js' %}"></script>
+<script>
+
+  // JSON data
+  var myTree = [
+    {% for building in buildingList %}
+    {
+      text: "{{ building }}",
+      nodes: [
+        {
+          text: "ismart",
+          nodes: [
+            {% for ismart in ismartFieldLables %}
+            {
+              text: "{{ ismart }}",
+              id: "{{ building.pk }}-Ismart-{{ ismart }}"
+            },
+            {% endfor %}
+          ],
+        },
+        {
+          text: "weather",
+          nodes: [
+            {% for weather in weatherFieldLabels %}
+            {
+              text: "{{ weather }}",
+              id: "{{ building.pk }}-Weather-{{ weather }}",
+            },
+            {% endfor %}
+          ],
+        },
+      ],
+    },
+    {% endfor %}
+  ];
+
+  // treeview 구현
+  $('#dataPointTree').treeview({
+
+    data: myTree,
+
+    levels: 3,
+
+    // custom icons
+    expandIcon: 'fas fa-plus',
+    collapseIcon: 'fas fa-minus',
+    emptyIcon: 'fas fa-minus',
+    nodeIcon: '',
+    selectedIcon: 'fas fa-check fa-xs',
+    checkedIcon: '',
+    uncheckedIcon: '',
+
+    //colors
+    color: undefined, // '#000000',
+    backColor: undefined, // '#FFFFFF',
+    borderColor: undefined, // '#dddddd',
+    onhoverColor: '#F5F5F5',
+    selectedColor: 'black',
+    selectedBackColor: '',
+    searchResultColor: '#D9534F',
+    searchResultBackColor: undefined, //'#FFFFFF',
+
+
+    // enables links
+    enableLinks: false,
+
+    // highlights selected items
+    highlightSelected: true,
+
+    // highlights search results
+    highlightSearchResults: true,
+
+    // shows borders
+    showBorder: false,
+
+    // shows icons
+    showIcon: true,
+
+    // shows checkboxes
+    showCheckbox: false,
+
+    // shows tags
+    showTags: false,
+
+    // enables multi select
+    multiSelect: true,
+
+    onNodeChecked: undefined,
+    onNodeCollapsed: undefined,
+    onNodeDisabled: undefined,
+    onNodeEnabled: undefined,
+    onNodeExpanded: undefined,
+    onNodeSelected: undefined,
+    onNodeUnchecked: undefined,
+    onNodeUnselected: undefined,
+    onSearchComplete: undefined,
+    onSearchCleared: undefined
+  });
+
+  // 초기화면에서 트리 접어두기
+  $('#dataPointTree').treeview('collapseAll', { silent: true });
+
+  //
+  $('#findId').click(function() {
+    var selected = $('#dataPointTree').treeview('getSelected');
+    var result = [];
+    for (var i=0; i<selected.length; i++) {
+      if (selected[i].id) {
+        result.push(selected[i].id);
+      };
+    };
+    document.write(result);
+  });
+
+  // 부모 노드를 선택하면 자녀 노드 전체 선택/해제 구현, multiselect가 true여야 한다.
+  function _getChildren(node) {
+    if (node.nodes === undefined) return [];
+    var childrenNodes = node.nodes;
+    node.nodes.forEach(function(n) {
+      childrenNodes = childrenNodes.concat(_getChildren(n));
+    });
+    return childrenNodes;
+  };
+
+  $('#dataPointTree').on('nodeSelected', function(event, node) {
+    var childrenNodes = _getChildren(node);
+    for (var i=0; i<childrenNodes.length; i++) {
+      $('#dataPointTree').treeview('selectNode', [ childrenNodes[i].nodeId, { silent: true } ]);
+    };
+  });
+
+  $('#dataPointTree').on('nodeUnselected', function(e, node) {
+    var childrenNodes = _getChildren(node);
+    for (var i=0; i<childrenNodes.length; i++) {
+      $('#dataPointTree').treeview('unselectNode', [ childrenNodes[i].nodeId, { silent: true } ]);
+    };
+  });
+
+</script>
+
+
+<script src="{% static 'jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+<link rel="stylesheet" href="{% static 'jquery-ui-1.12.1/jquery-ui.min.css' %}">
+<script>
+  $(function() {
+    //input을 datepicker로 선언
+    $(".datepicker").datepicker({
+      dateFormat: 'yy-mm-dd' //Input Display Format 변경
+        ,
+      showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+        ,
+      showMonthAfterYear: true //년도 먼저 나오고, 뒤에 월 표시
+        ,
+      changeYear: true //콤보박스에서 년 선택 가능
+        ,
+      changeMonth: true //콤보박스에서 월 선택 가능
+        ,
+      buttonText: "선택" //버튼에 마우스 갖다 댔을 때 표시되는 텍스트
+        ,
+      yearSuffix: " - " //달력의 년도 부분 뒤에 붙는 텍스트
+        ,
+      monthNamesShort: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'] //달력의 월 부분 텍스트
+        ,
+      monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'] //달력의 월 부분 Tooltip 텍스트
+        ,
+      dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'] //달력의 요일 부분 텍스트
+        ,
+      dayNames: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'] //달력의 요일 부분 Tooltip 텍스트
+        <!-- ,minDate: "-1M" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전) -->
+        ,
+      maxDate: "-1D" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)
+    });
+  });
+</script>
+
+
+
+
+
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script>
+  Highcharts.setOptions({
+    lang: {
+      thousandsSep: ','
+    }
+  });
+
+  $.getJSON(
+    "{{ json_url }}",
+    function(data) {
+
+      Highcharts.chart('charts_container', {
+        chart: {
+          zoomType: 'x'
+        },
+        title: {
+          text: '전기 에너지 소비 트렌드'
+        },
+        subtitle: {
+          text: document.ontouchstart === undefined ?
+            'Click and drag in the plot area to zoom in' : 'Pinch the chart to zoom in'
+        },
+        xAxis: {
+          plotBands: [{ // mark the weekend
+            color: '#F6CECE',
+            from: Date.UTC(2018, 11, 2),
+            to: Date.UTC(2018, 11, 4) + (24 * 60 * 60 * 1000)
+          }, {
+            color: '#FCFFC5',
+            from: Date.UTC(2018, 11, 6),
+            to: Date.UTC(2018, 11, 8)
+          }],
+          type: 'datetime',
+        },
+        yAxis: {
+          title: {
+            text: 'kWh'
+          },
+          tooltip: {
+            shared: true,
+            crosshairs: true
+          },
+        },
+        legend: {
+          enabled: false
+        },
+        plotOptions: {
+          area: {
+            fillColor: {
+              linearGradient: {
+                x1: 0,
+                y1: 0,
+                x2: 0,
+                y2: 1
+              },
+              stops: [
+                [0, Highcharts.getOptions().colors[0]],
+                [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+              ]
+            },
+            marker: {
+              radius: 2
+            },
+            lineWidth: 1,
+            states: {
+              hover: {
+                lineWidth: 1
+              }
+            },
+            threshold: null
+          }
+        },
+
+        series: [{
+          type: '{{ chart_type }}',
+          name: 'kWh',
+          lineWidth: 0.5,
+          data: data
+        }],
+
+        credits: false
+      });
+    }
+  );
+</script>
+
+
+{% endblock %}

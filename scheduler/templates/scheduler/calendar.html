@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load scheduler_extras %}
+
+<!-- 화면을 3개 영역으로 구분 -->
+<div class="py-2" style="display: table; width: 100%; min-height: calc(100vh - 85px);">
+	<!-- 첫 번째, 사이드바 메뉴 영역 -->
+	<div class="align-top pr-2 border-right" style="display: table-cell; width: 180px;">
+		{% include 'buildinginfo/sidebar.html' %}
+	</div>
+
+	<!-- 두 번째, 캘린더 영역 -->
+	<div class="align-top border-right px-3" style="display: table-cell">
+
+		<!-- 캘린더 메뉴 영역 -->
+		<div class="clearfix">
+
+			<!-- 건물 선택 버튼 영역 -->
+			<div class="float-left w-25">
+				<div class="btn-group">
+					<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						{% if request.GET.name %}
+							{{ request.GET.name }}
+						{% else %}
+							전체
+						{% endif %}
+					</button>
+					<div class="dropdown-menu" style="max-height: 500px; overflow: auto;">
+						<a class="dropdown-item" href="{% url 'scheduler:calendar' %}{% if request.GET.month %}?month={{ request.GET.month }}{% endif %}">
+							{% if building_objects %}
+								전체
+							{% else %}
+								등록된 빌딩이 없습니다
+							{% endif %}
+						</a>
+						<div class="dropdown-divider"></div>
+							{% for building in building_objects %}
+								<a class="dropdown-item" href="{% url 'scheduler:calendar' %}?id={{ building.pk }}&name={{ building.name }}{% if request.GET.month %}&month={{ request.GET.month }}{% endif %}">{{ building.name }}</a>
+							{% endfor %}
+					</div>
+				</div>
+			</div>
+
+			<!-- 달력 일자 선택 영역 -->
+			<div class="float-left w-50 text-center">
+				<!-- 이전달 선택버튼 -->
+				<span class="align-middle mx-1" style="font-size: 30px;">
+					<a href="{% url 'scheduler:calendar' %}?{{ prev_month }}{% if request.GET.id %}&id={{ request.GET.id }}&name={{ request.GET.name }}{% endif %}"><i class="fas fa-chevron-left"></i></a>
+				</span>
+
+				<!-- 달력 일자 직접 입력 버튼-->
+				<span class="ml-1">
+					<!-- 연도 선택 -->
+					<span class="btn-group">
+						<button type="button" class="btn dropdown-toggle py-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="font-weight-lighter" style="font-size: 28px;">{{ date|date:"Y" }}</span></button>
+						<div class="dropdown-menu">
+							{% now "Y" as year %}
+							<a class="dropdown-item" href="{% url 'scheduler:calendar' %}?month={{ year }}-{{ date|date:'m' }}{% if request.GET.id %}&id={{ request.GET.id }}&name={{ request.GET.name }}{% endif %}">{{ year }}</a>
+							{% for i in i|rjust:10 %}
+								<a class="dropdown-item" href="{% url 'scheduler:calendar' %}?month={{ year|sub:forloop.counter }}-{{ date|date:'m' }}{% if request.GET.id %}&id={{ request.GET.id }}&name={{ request.GET.name }}{% endif %}">{{ year|sub:forloop.counter }}</a>
+							{% endfor %}
+						</div>
+					</span>
+					<!-- 월 선택 -->
+					<span class="">
+						<div class="btn-group">
+							<button type="button" class="btn dropdown-toggle py-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span style="font-size: 28px;">{{ date|date:'m' }}</span></button>
+							<div class="dropdown-menu">
+								{% for i in i|rjust:12 %}
+									<a class="dropdown-item" href="{% url 'scheduler:calendar' %}?month={{ date|date:'Y' }}-{{ forloop.counter }}{% if request.GET.id %}&id={{ request.GET.id }}&name={{ request.GET.name }}{% endif %}">{{ forloop.counter }}</a>
+								{% endfor %}
+							</div>
+						</div>
+					</span>
+				</span>
+
+				<!-- 다음달 선택버튼 -->
+				<span class="align-middle mx-1" style="font-size: 30px;">
+					<a href="{% url 'scheduler:calendar' %}?{{ next_month }}{% if request.GET.id %}&id={{ request.GET.id }}&name={{ request.GET.name }}{% endif %}"><i class="fas fa-chevron-right"></i></a>
+				</span>
+
+			</div>
+
+			<!-- 툴박스 영역 -->
+			<div class="float-right w-25 text-right">
+				<button class="btn btn-danger px-2" id="hide-spark" title="hide-spark" data-toggle="button" aria-pressed="false" autocomplete="off"><i class="far fa-eye-slash"></i></button>
+				<a class="popup btn btn-danger px-2" href="{% url 'scheduler:event_new' %}{% if request.GET.id %}?id={{ request.GET.id }}&name={{ request.GET.name }}{% endif %}" title="New"><i class="far fa-calendar-plus"></i></a>
+				<button class="btn btn-danger px-2" id="refresh" title="refresh"><i class="fas fa-redo-alt"></i></button>
+			</div>
+
+		</div>
+
+		<!-- 캘린더 영역 -->
+		<div class="font-weight-light bg-white p-1 mt-3">
+			{{ calendar }}
+		</div>
+
+	</div>
+
+	<!-- 세 번째, 이벤트 리스트 영역 -->
+	<div class="align-top text-left pl-2" style="display: table-cell; width: 230px; max-width: 230px;">
+		<ul class="list-group">
+			<li class="list-group-item active">이달의 일정</li>
+			{% if events %}
+				{% for event in events %}
+					<li class="list-group-item" style="font-size: 12px; padding: 10px 10px;">
+						<span class="bg-primary rounded-circle" style="display: inline-block; height: 8px; width: 8px;"></span>
+						<span class="event pr-2">
+							<a class="popup text-dark" href="{% url 'scheduler:event_detail' pk=event.id %}">
+								<span class="d-inline-block text-truncate" style="width: 85%;">
+									{% if request.GET.id %}
+										{{ event.event }}({{ event.start_time|date:'m/d' }}~{{ event.end_time|date:'m/d' }})
+									{% else %}
+										{{event.building}}-{{ event.event }}({{ event.start_time|date:'m/d' }}~{{ event.end_time|date:'m/d' }})
+									{% endif %}
+								</span>
+							</a>
+							<a class="event-delete" href="{% url 'scheduler:event_delete' pk=event.id %}" onclick="return confirm('이 일정을 삭제하시겠습니까?')"><i class="fas fa-times text-danger text-right"></i></a>
+						</span>
+					</li>
+				{% endfor %}
+			{% endif %}
+		</ul>
+	</div>
+</div>
+
+<!-- 이벤트 등록 팝업 -->
+<div class="popup-layer" id="popup-layer">
+	<div class="popup-content" id="popup-content"></div>
+</div>
+
+<!-- 로더 생성 -->
+<div class="loader" id="loader"></div>
+
+<style>
+a.popup {
+	text-decoration: none;
+}
+
+span a.popup:hover {
+	opacity: 0.5;
+}
+
+.calendar {
+	width: 100%;
+	/* min-height: 60vh; */
+	/* max-height: 80vh; */
+	table-layout: fixed;
+}
+
+.calendar tr {
+	margin-bottom: 4px;
+}
+
+.calendar th {
+	height: 40px;
+}
+
+.calendar td {
+	/* min-width: 120px; */
+	/* width: 144px; */
+	padding: 0;
+	/* border-right: 1px solid rgb(136, 135, 135); */
+	/* border-left: 1px solid rgb(136, 135, 135); */
+}
+
+.calendar td.outside-month {
+	opacity: 0.6;
+}
+
+.calendar ul {
+	padding-left: 5%;
+	margin-bottom: 0;
+	min-height: 50px;
+	max-height: 50px;
+	overflow: auto;
+}
+
+.calendar li {
+	margin-bottom: 1px;
+	list-style: none;
+	font-size: 11px;	
+}
+
+.calendar a {
+	color: inherit;
+}
+
+.calendar .week .sat {
+	color: rgb(56, 56, 163);
+}
+
+.calendar .week .sun {
+	color: rgb(196, 88, 88);
+}
+
+.calendar .weather-spark {
+	border-bottom: 1px solid rgb(136, 135, 135);
+}
+
+.calendar .weekday td {
+	padding: 0 2px;
+}
+
+.event-list {
+	visibility: hidden;
+}
+
+.week:hover .event-list {
+	visibility: visible;
+	position: relative;
+}
+
+.week:hover .event-sign {
+	visibility: hidden !important;
+	height: 0;
+}
+
+.event-delete {
+	visibility: hidden;
+}
+
+.event:hover .event-delete {
+	visibility: visible;
+}
+
+.sparkline .index {
+	position: relative;
+  float: left;
+	min-height: 30px;
+	/* background-color:darkgray; */
+}
+
+.cooling {
+	background-color: lightblue;
+}
+
+.heating {
+	background-color: lightcoral;
+}
+
+.electric {
+	background-color: rgba(12, 12, 12, 0.3);
+	/* z-index: 2; */
+}
+
+.spark .sparkline .index .count { 
+  display: block;
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  font: 0/0 a;
+  text-shadow: none;
+  color: transparent;
+}
+
+.spark .sparkline .index:hover .electric {  
+  background-color: rgba(224, 127, 127, 0.3);
+	/* z-index: 2; */
+}
+
+.spark .sparkline .index:hover .heating {  
+  background-color: black;
+}
+
+.spark .sparkline .index:hover .cooling {  
+  background-color: black;
+}
+
+.popup-layer {
+	/* visibility: hidden; */
+	display: none;
+  position: fixed;
+  /* _position: absolute; */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+	background-color: rgba(12, 12, 12, 0.336);
+}
+
+.popup-layer .popup-content {
+	position: absolute;
+	padding: 15px;
+	top: calc(45% - 225px);
+	left: calc(50% - 200px);
+	width: 400px;
+	font-size: 14px;
+	border: 1px solid rgb(53, 53, 53);
+	background-color: white;
+}
+
+.popup-layer .popup-content .form-control {
+	max-height: 70px;
+}
+
+#loader {
+	display: none;
+	position: fixed;
+	top: calc(50vh - 30px);
+	left: calc(50vw - 30px);
+  border: 8px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 8px solid #3498db;
+  width: 60px;
+  height: 60px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+	
+<script>
+	// var scrollHeight = 0; // 전역변수로 초기화
+
+
+	$(document).ready(function() {
+		// $(".popup-layer").hide();
+
+		$(".popup").click(function(e) {
+			scrollHeight = $("body").scrollTop(); // 열렸을떄 scrollTop 체크 (var 쓰지않기. 팝업오픈했을때만사용하기위한 변수)
+			$("body").addClass('overflow-hidden'); //overflow:hidden 추가
+			$(".wrap").css({
+				"position": "fixed", //최상위 div 고정
+				"top": -scrollHeight // 최상위 div에 현재 스크롤된값 = 보이는화면만큼 top값 추가
+			});
+			e.preventDefault();
+
+			$('#loader').show();
+			var href = $(this).attr('href');
+
+			new Promise(function(resolve, reject) {
+				$("#popup-content").load(href);
+				resolve();
+			}).then(function(result) {
+				setTimeout(function() {
+					$('#loader').hide();
+					$("#popup-layer").show();
+				}, 100);
+			});
+		});
+
+		function pageLoad(href) {
+			return new Promise(function(resolve, reject) {
+				$("#popup-content").load(href);
+			})
+		}
+
+		$("#refresh").click(function(e) {
+			window.location.reload();
+		});
+
+		$("#hide-spark").click(function() {
+			$(".spark").toggle();
+		});
+	});
+</script>
+
+
+
+{% endblock %}

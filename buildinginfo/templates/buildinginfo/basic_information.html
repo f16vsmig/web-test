@@ -1,0 +1,25 @@
+<div class="bg-white sticky-top">
+  <div class="" style="height: 40%;">
+    {% if building_obj.photo %}
+      <img src="{{ building_obj.photo.url }}" class="mx-auto d-block p-3" style="max-height: 100%; max-width: 100%;" alt="빌딩 사진">
+    {% else %}
+      <p class="text-center">No Photo</p>
+    {% endif %}
+  </div>
+  <div class="p-1">
+    <h3 class="text-muted text-center font-weight-light text-truncate">{{ building_obj.name }}</h3>
+    <ul class="list-group list-group-flush font-weight-light" style="font-size: 15px;">
+      <li class="list-group-item text-truncate">준공일 : {{ building_obj.construction_date|date:'Y-m-d' }}</li>
+      <li class="list-group-item text-truncate">건물주 : {{ building_obj.owner }}</li>
+      <li class="list-group-item text-truncate">관리사 : {{ building_obj.fm }}</li>
+    </ul>
+  </div>
+</div>
+
+<!-- <style>
+.sticky-top {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+}
+</style> -->

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html>
+
+{% load static %}
+
+<head>
+  <title>building energy audit system</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- bootstrap 리소스 추가 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <!-- favicon 추가 -->
+  <link rel="shortcut icon" href="{% static 'favicon/favicon.png' %}" />
+  <!-- fontawesome 리소스 추가 -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js" type="text/javascript"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.css">
+
+</head>
+
+<body style="background: WhiteSmoke;">
+  <div class="wrap">
+    <div class="bg-info" style="height: 50px; display: flex; align-items: center; justify-content: center;">
+      <a class="text-white text-decoration-none" href="/">
+        <h3>Energy Benchmark System</h3>
+      </a>
+    </div>
+    <div class="container-fluid">
+      <div class="mx-auto" style="height: calc(100vh - 50px - 25px); display: flex; align-items: center; justify-content: center;">
+        <div class="text-center">
+          <div>
+            <p class="text-warning"><i class="fas fa-user-lock fa-5x m-2"></i></p>
+            <p class="text-muted font-weight-lighter" style="font-size: 18px;">권한이 없습니다.</p>
+          </div>
+          <div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">건물주</th>
+                  <th scope="col">건물운영자</th>
+                  <th scope="col">센터운영자</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">공통권한</th>
+                  <td colspan="3">빌딩정보, 게시판</td>
+                </tr>
+                <tr>
+                  <th scope="row">고유권한</th>
+                  <td>워크오더 발행</td>
+                  <td>워크오더 확인 및 처리</td>
+                  <td>건물운영관리</td>
+                </tr>
+                <tr>
+                  <th scope="row">문의</th>
+                  <td colspan="3">aaa@gmail.com</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+  
+      {% include 'footer.html' %}
+
+    </div>
+  </div>
+</body>
+
+<style>
+  html, body {
+    height: 100%
+  }
+  
+  .wrap {
+    min-height: 100%;
+    width: 100%;
+    position: relative;
+    padding-bottom: 25px;
+    overflow: auto;
+  }
+
+  </style>

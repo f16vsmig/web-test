@@ -1,0 +1,27 @@
+{% extends 'energyaudit/base.html' %}
+
+{% block content %}
+{% load staticfiles%}
+
+
+<div class="container">
+  <h2>Simple Collapsible</h2>
+  <a href="#demo-1" class="btn btn-primary" data-toggle="collapse">Simple collapsible</a>
+  <div id="demo-1" class="collapse">
+    <div>
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </div>
+    <div>
+      <a href="#demo-2" class="btn btn-primary" data-toggle="collapse">Simple collapsible</a>
+    </div>
+    <div id="demo-2" class="collapse">
+      Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+      sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,18 @@
+<div class="list-group" style="width: 170px;">
+    {% url 'buildinginfo:building_list' as url_building_list %}
+    <a href="{{ url_building_list }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center {% if url_building_list in request.path %}active{% endif %} ">
+        빌딩리스트
+    </a>
+    {% url 'scheduler:calendar' as url_scheduler_calendar %}
+    <a href="{{ url_scheduler_calendar }}" class="list-group-item list-group-item-action {% if request.path == url_scheduler_calendar %}active{% endif %}">
+        스케쥴 관리
+    </a>
+    {% url 'buildinginfo:weather_file_upload' as url_weather %}
+    <a href="{{ url_weather }}" class="list-group-item list-group-item-action {% if request.path == url_weather %}active{% endif %}">
+        날씨데이터 관리
+    </a>
+    {% url 'board:notice_main' board_name='notice' as url_notice %}
+    <a href="{{ url_notice }}" class="list-group-item list-group-item-action {% if board_name == 'notice' %}active{% endif %}">
+        공지사항
+    </a>
+</div>

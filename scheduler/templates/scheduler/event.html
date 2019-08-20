@@ -1,0 +1,81 @@
+<div class="row align-items-center">
+  <div class="col">
+    <div class="row my-1">
+      <div class="col-8">
+        <h1 class="font-weight-lighter">이벤트</h1>
+      </div>
+      <div class="col-4">
+        <button class="close float-right"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="row justify-content-md-center px-0">
+      <div class="col align-items-center">
+        <form method="post" id="event-form" action="{{ request.path }}">{% csrf_token %}
+          {% if form.errors %}
+            <div class="alert alert-danger" role="alert">
+              {% for error in form.errors.values %}
+                {{ error|striptags }}
+              {% endfor %}
+            </div>
+          {% endif %}
+          {% for field in form %}
+            <div class="form-group row justify-content-md-center">
+              <label for="{{ field.auto_id }}" class="col-4 col-form-label">{{ field.label_tag }}</label>
+              <div class="col-8">
+                {{ field }}
+              </div>
+            </div>
+          {% endfor %}
+          {% if 'new' in request.path %}
+            <button class="btn btn-info btn-lg btn-block" type="submit">저장</button>
+          {% else %}
+            <div class="pt-1">
+              <div class="w-75 float-left pr-2">
+                <button class="btn btn-info btn-lg btn-block" type="submit">수정</button>
+              </div>
+              <div class="w-25 float-left">
+                <a class="btn btn-danger btn-lg btn-block" href="{% url 'scheduler:event_delete' pk=object.id %}" onclick="return confirm('Delete event?')">삭제</a>
+              </div>
+            </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  $(function () {
+    $('.datetimepicker').datetimepicker({
+      dayViewHeaderFormat: 'YYYY-MM',
+      format: "YYYY-MM-DD HH:mm",
+			sideBySide: true,
+			icons: {
+        time: 'fa fa-clock-o',
+        date: 'fa fa-calendar',
+				up: "fa fa-chevron-circle-up",
+        down: "fa fa-chevron-circle-down",
+        next: 'fa fa-chevron-circle-right',
+        previous: 'fa fa-chevron-circle-left',
+        today: 'fa fa-crosshairs',
+        clear: 'fa fa-trash-o',
+        close: 'fa fa-times'
+			},
+		});
+	});
+</script>
+  
+<script>
+  $(".close").click(function() {
+    $(".popup-layer").hide()
+    $(".popup-content").empty();
+    $("body").removeClass("overflow-hidden"); //overflow-hidden 해제(스크롤 해제)
+    $(".wrap").css({
+      "position": "relative", //최상위 div 고정해제
+      "top": "0" //top값 해제
+    });
+    $("body").scrollTop(scrollHeight); //현재 스크롤된값=보이는화면
+  });
+</script>

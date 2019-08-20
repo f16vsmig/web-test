@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="py-2" style="display: table; width: 100%; min-height: calc(100vh  - 85px);">
+    <div class="align-top pr-2 border-right" style="display: table-cell; width: 180px;">
+        {% include 'buildinginfo/sidebar.html' %}
+    </div>
+    <div class="mx-auto align-top px-2 m-2" style="display: table-cell">
+        <div class="row align-items-center justify-content-center w-100 h-100 pt-5 pb-5">
+            <div class="col-md-6">
+                <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.errors.values %}
+                                {{ error|striptags }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if massages %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in messages %}
+                                {{ error|striptags }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% for field in form %}
+                        <div class="form-group row justify-content-md-center">
+                            <label for="{{ field.auto_id }}" class="col-4 col-form-label">{{ field.label_tag }}</label>
+                            <div class="col-8">
+                                {{ field }}
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <input class="btn btn-dark btn-lg btn-block" type="submit" value="저장">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+    $('.datepicker').datetimepicker({
+        dayViewHeaderFormat: 'YYYY-MM',
+        format: "YYYY-MM-DD",
+            sideBySide: true,
+            icons: {
+                time: 'fa fa-clock-o',
+                date: 'fa fa-calendar',
+				up: "fa fa-chevron-circle-up",
+                down: "fa fa-chevron-circle-down",
+                next: 'fa fa-chevron-circle-right',
+                previous: 'fa fa-chevron-circle-left',
+                today: 'fa fa-crosshairs',
+                clear: 'fa fa-trash-o',
+                close: 'fa fa-times'
+            },
+        });
+    });
+</script>
+
+{% endblock %}

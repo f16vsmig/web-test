@@ -1,0 +1,50 @@
+<div class="border-bottom px-2 clearfix">
+  <h1 class="float-left">
+    {% if post_detail.notice == True %}[공지]{% endif %}&nbsp;{{ post_detail.title }}
+  </h1>
+  {% if request.user == post_detail.author %}
+    <form method="POST" action="{% url 'board:post_delete' pk=request.GET.id %}">{% csrf_token %}
+      <input type="submit" class="btn btn-danger ml-1 my-auto float-right post-delete" value="삭제">
+    </form>
+    <a class="btn btn-secondary float-right" href="{% url 'board:post_update' pk=post_detail.pk %}?board={{ board_name }}&page={{ request.GET.page }}">수정</a>
+  {% endif %}
+</div>
+
+<div class="bg-light p-2">
+  <span>{{ post_detail.author }} 님</span>
+  <span class="float-right">조회수: {{ post_detail.hits }}</span>
+</div>
+<div class="pl-2">
+  <span class="font-weight-lighter" style="font-size: 13px;"><i class="far fa-clock"></i>&nbsp;{{ post_detail.registration|date:'Y-m-d H:i' }}</span>
+</div>
+<div class="px-2 py-3">
+  <p>{{ post_detail.memo|linebreaks }}</p>
+  {% for photo in photos %}
+    <p><img src="{{ photo.image.url }}" class="mx-auto d-block p-3" style="max-height: 100%; max-width: 100%;" alt=""></p>
+  {% endfor %}
+</div>
+
+<script>
+
+  $('.post-delete').on('click', function(e) {
+    e.preventDefault();
+    var con = confirm('이 글을 삭제하겠습니까?');
+    if (con == true) {
+      var form = $(e.target).closest('form');
+      var submitUrl = form.attr('action');
+      $.ajax({
+        type: 'POST',
+        url: submitUrl,
+        dataType: 'json',
+        data: form.serialize(),
+        success: function(){
+          location.replace(document.referrer); // 이전페이지 불러오기
+        },
+        fail: function() {
+          alert('오류가 발생했습니다.');
+        }
+      });
+    };
+  });
+
+</script>
