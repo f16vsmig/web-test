@@ -18,13 +18,18 @@
     
     <!-- 대시보드 영역 -->
     <div class="row">
-      <div class="col py-2">
+      <div class="col-12 pt-2">
         <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#work-progress" aria-expanded="true" aria-controls="work-progress">
           작업상황
         </button>
       </div>
     </div>
     <div class="row collapse show" id="work-progress">
+      <div class="col-12 py-2">
+        <div class="position-relative" style="height: 10px;">
+          <span class="rounded bg-danger h-100" data-toggle="tooltip" data-placement="bottom" title="진행률 50%" style="min-width: 50%; min-height: 10px; position: absolute; top: 0;"></span>
+        </div>
+      </div>
       <div class="col pr-0">
         <div class="p-2 bg-white centering zoom zoom-2">
           <div class="text-center">
@@ -170,7 +175,7 @@
         <div class="p-2 bg-white centering zoom zoom-2">
           <div class="text-center">
             <i class="fas fa-fire-alt fa-2x my-2"></i>
-            <i class="far fa-thermometer-quarter fa-5x my-2"></i>
+            <i class="fas fa-thermometer-quarter fa-5x my-2"></i>
             <h4>난방도일</h4>
             <h3 class="border-bottom pb-2">1000 (25%)</h3>
             <h6 class="font-weight-light">냉방계수: 1.4</h6>

@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
 from django.conf import settings
 
-from decorator_include import decorator_include
+from decorator_include import decorator_include # pip install django-decorator-include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,7 +15,7 @@ urlpatterns = [
     path('scheduler/', decorator_include([login_required], ('scheduler.urls', 'scheduler'))),
     path('chart/', decorator_include([login_required], ('chart.urls', 'chart'))),
     path('board/', decorator_include([login_required], ('board.urls', 'board'))),
-    path('permission-denied', login_required(TemplateView.as_view(template_name='permission_denied.html')), name='permission_denied')
+    path('permission-denied/', login_required(TemplateView.as_view(template_name='permission_denied.html')), name='permission_denied')
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
