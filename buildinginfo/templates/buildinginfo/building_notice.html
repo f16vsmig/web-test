@@ -17,22 +17,27 @@
     
     <!-- 대시보드 영역 -->
     <div class="row">
-      <div class="col py-2">
-        <!-- 본문 영역 -->
-        {% if post_detail %}
-        <div class="bg-white clearfix mt-2 px-1 py-3">
-          {% include "board/post_detail.html" %}
+      <div class="col">
+        <div class="bg-white">
+          
+          <!-- 본문 영역 -->
+          {% if post_detail %}
+          <div class="clearfix mt-2 px-1 py-2">
+            {% include "board/post_detail.html" %}
+          </div>
+
+          <!-- 댓글 영역 -->
+          <div class="clearfix bg-white mb-3 p-2">
+            {% include "board/comment.html" %}
+          </div>
+          {% endif %}
+
+          <!-- 글목록 영역 -->
+          <div class="p-2">
+            {% include "board/list.html" %}
+          </div>
+
         </div>
-
-        <!-- 댓글 영역 -->
-        <div class="clearfix bg-white mb-3 p-2">
-          {% include "board/comment.html" %}
-        </div>
-        {% endif %}
-
-        <!-- 글목록 영역 -->
-        {% include "board/list.html" %}
-
       </div>
     </div>
   </div>

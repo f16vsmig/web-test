@@ -241,7 +241,7 @@ class BuildingCalendar(HTMLCalendar):
         else:
             today_class = ''
 
-        return f"<td class='week border border-bottom-0 align-top text-center pt-1{month_class}'><span class='text-center day {date.strftime('%a').lower()}{today_class}' style='display: inline-block; height: 25px; width: 25px;'><a class='popup p-1' href={reverse('scheduler:event_new')}?date={date}{building_params}>{date.day}</a></span><br><span class='bg-danger rounded-circle event-sign' style='visibility: {event_button}; display: inline-block; height: 10px; width: 10px;'></span><ul class='event-list bg-light' style='position: relative; top: -20px;'>{event_list}</ul></td>"
+        return f"<td class='week border border-bottom-0 align-top text-center pt-1{month_class}'><span class='text-center day {date.strftime('%a').lower()}{today_class}' style='display: inline-flex; align-items: center; height: 27px; width: 27px;'><a class='popup p-1' href={reverse('scheduler:event_new')}?date={date}{building_params}>{date.day}</a></span><br><span class='bg-danger rounded-circle event-sign' style='visibility: {event_button}; display: inline-block; height: 10px; width: 10px;'></span><ul class='event-list bg-light' style='position: relative; top: -20px;'>{event_list}</ul></td>"
 
 
     def sparkline(self, date, ismart):
@@ -279,7 +279,7 @@ class BuildingCalendar(HTMLCalendar):
         sparkline = ''
         if data:
             for item in data:
-                time = item[0]
+                time = item[0].strftime("%m-%d %H:%M")
                 hour = item[0].hour
                 if hour == 0:
                     hour = 24
@@ -291,7 +291,7 @@ class BuildingCalendar(HTMLCalendar):
                     color = 'cooling'
                 else:
                     color = 'heating'
-                sparkline += f'<span class="index" style="width: 4.16666667%;" data-toggle="tooltip" data-placement="top" data-html="true" title="{time}<br>{elec} kWh<br>{temp} &#8451;" data-animation="false"><span class="count electric" style="height: {elec_height}%;"></span><span class="count {color} rounded-circle" style="bottom: {temp_bottom}%; height: 4px; width: 4px; left: calc(50% - 2px);"></span></span>'
+                sparkline += f'<span class="index" style="width: 4.16666667%;" data-toggle="tooltip" data-placement="top" data-html="true" title="&#x1F550; {time}<br>&#x26A1; {elec} kWh<br>{temp} &#8451;" data-animation="false"><span class="count electric" style="height: {elec_height}%;"></span><span class="count {color} rounded-circle" style="bottom: {temp_bottom}%; height: 4px; width: 4px; left: calc(50% - 2px);"></span></span>'
         else:
             sparkline += '<span></span>'
         return f"<td class='week border border-top-0{month_class}'><span class='sparkline' style='width: 100%;'> {sparkline} </span></td>"
