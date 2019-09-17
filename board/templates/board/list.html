@@ -22,7 +22,7 @@
             <a href="?page=1&id={{ object.pk }}">
           {% endif %}
 
-          [알림] {{ object.title }}
+          [공지] {{ object.title }}
 
             <span class="font-weight-lighter">
               {% if photo_list|count:object.pk > 0 %}
@@ -49,6 +49,7 @@
         {% endif %}
       </tr>
     {% endfor %}
+    
     <!-- 게시글 목록 영역 -->
     {% for object in object_list %}
       <tr class="text-center">

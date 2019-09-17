@@ -1,12 +1,12 @@
 <div class="border-bottom px-2 clearfix">
-  <h1 class="float-left">
+  <h1 class="float-left font-weight-lighter">
     {% if post_detail.notice == True %}[공지]{% endif %}&nbsp;{{ post_detail.title }}
   </h1>
   {% if request.user == post_detail.author %}
     <form method="POST" action="{% url 'board:post_delete' pk=request.GET.id %}">{% csrf_token %}
-      <input type="submit" class="btn btn-danger ml-1 my-auto float-right post-delete" value="삭제">
+      <input type="submit" class="btn btn-danger btn-sm ml-1 my-auto float-right post-delete" value="삭제">
     </form>
-    <a class="btn btn-secondary float-right" href="{% url 'board:post_update' pk=post_detail.pk %}?board={{ board_name }}&page={{ request.GET.page }}">수정</a>
+    <a class="btn btn-secondary btn-sm float-right" href="{% url 'board:post_update' pk=post_detail.pk %}?board={{ board_name }}&page={{ request.GET.page }}">수정</a>
   {% endif %}
 </div>
 

@@ -10,4 +10,5 @@ urlpatterns = [
     # path('', views.ChartView.as_view(), name='chart'),
     path('', views.ChartView, name='chart'),
     path('chartdata/', views.ChartData, name='chart_data'),
+    path('google-chart-data/', views.GoogleChartData, name='google_chart_data'),
 ]
