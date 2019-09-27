@@ -4,86 +4,18 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
 
+      
+      startDate = '2018-01-01';
+      endDate = '2018-01-30';
+      pointList = ['23-sam-Ismart-kWh', '23-sam-Ismart-kW_peak', '23-sam-Ismart-kVarh_lag']
+
       // Load the Visualization API and the corechart package.
       google.charts.load('current', {'packages':['corechart']});
 
       // Set a callback to run when the Google Visualization API is loaded.
       google.charts.setOnLoadCallback(drawChart);
 
-      // Callback that creates and populates a data table,
-      // instantiates the pie chart, passes in the data and
-      // draws it.
-      function drawChart() {
-        var dataUrl = ['http://localhost:8000/chart/google-chart-data/?start-day=2019-04-01&end-day=2019-04-29&datapoint=23-sam-Ismart-kWh', 'http://localhost:8000/chart/google-chart-data/?start-day=2019-04-01&end-day=2019-04-29&datapoint=23-sam-Ismart-kW_peak', 'http://localhost:8000/chart/google-chart-data/?start-day=2019-04-01&end-day=2019-04-29&datapoint=23-sam-Ismart-kVarh_lag'];
-        // chartData1 = getjson(dataUrl);
-        
-        var chartDataFinal = {
-          'cols': [
-            {'id': 'timestamp', 'label': 'timestamp', 'type': 'date'}
-          ],
-          'rows': []
-        };
-
-        for (var i=0; i<dataUrl.length; i++) {
-          chartData = getjson(dataUrl[i]);
-          newCol = chartData['cols'][1];
-          chartDataFinal['cols'].push(newCol);
-          // console.log(chartData);
-          if (i==0) {
-            chartDataFinal['rows'].push(chartData['rows']);
-          } else {
-            for(k in chartData['rows']) {
-              var data = chartData['rows'][k];
-              // chartDataFinal['rows'][k].push(data);
-              // var key = Object.keys(k);
-
-              // console.log(data);
-              // console.log(k);
-              // console.log(chartDataFinal['rows'][0][k]);
-              if (chartDataFinal['rows'][0][k]) {
-                chartDataFinal['rows'][0][k].push(data[0]);
-              } else {
-                chartDataFinal['rows'][0][k] = data;
-              };
-            };
-          };
-        };
-        // console.log(chartDataFinal);
-        var chartData3 = {};
-        chartData3['cols'] = chartDataFinal['cols'];
-        chartData3['rows'] = [];
-        for (k in chartDataFinal['rows'][0]) {
-          newRow = {'c': [{'v': k}]};
-          // console.log(k);
-          // console.log(chartDataFinal['rows'][0][k]);
-          for (v in chartDataFinal['rows'][0][k]) {
-            newRow['c'].push({'v': chartDataFinal['rows'][0][k][v]});
-            // console.log(chartDataFinal['rows'][0][k]);
-          };
-          chartData3['rows'].push(newRow);
-        };
-        console.log(chartDataFinal);
-        console.log(chartData3);
-        // chartData3['rows'] = 
-        // Create the data table.
-        var data = new google.visualization.DataTable(chartData3);
-
-        // Set chart options
-        var options = {
-          'title': 'How Much Pizza I Ate Last Night',
-          'width': 1000,
-          'height': 800,
-          crosshair: {
-            trigger: 'both',
-            orientation: 'vertical',
-          },
-        };
-
-        // Instantiate and draw our chart, passing in some options.
-        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-      }
-
+      
       function getjson(url) {
         var resp = '';
         var xmlHttp ;
@@ -95,6 +27,74 @@
         };
         return resp;
       };
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+
+      function getChartData(startDate, endDate, pointList) {
+        var totalJson = {};
+        var keys = [];
+        for (var i=0; i<pointList.length; i++) {
+          jsonUrl = 'http://localhost:8000/chart/google-chart-data/?start-day=' + startDate + '&end-day=' + endDate + '&datapoint=' + pointList[i];
+          console.log(jsonUrl);
+          json = getjson(jsonUrl);
+          totalJson[pointList[i]] = json;
+          keys = keys.concat(Object.keys(json['data']));
+        };
+        var uniqueKeys = Array.from(new Set(keys));
+
+        var chartData = {};
+        chartData['cols'] = [{'id': 'timestamp', 'label': 'timestamp', 'type': 'date'}];
+        chartData['rows'] = [];
+        for (var i=0; i<Object.keys(totalJson).length; i++) {
+          buildingKey = Object.keys(totalJson)[i];
+          chartData['cols'].push(totalJson[buildingKey]['prop']);
+        };
+
+        chartData['rows'] = [];
+        for (var i=0; i<uniqueKeys.length; i++) {
+          var dateKey = uniqueKeys[i];
+          var newRow = {'c': [{'v': dateKey}]}
+          for(var j=0; j<Object.keys(totalJson).length; j++) {
+            buildingKey = Object.keys(totalJson)[j];
+            if (typeof totalJson[buildingKey]['data'][dateKey] != 'undefined') {
+              newRow['c'].push({'v': totalJson[buildingKey]['data'][dateKey]});
+            } else {
+              newRow['c'].push({'v': null});
+            };
+          };
+          chartData['rows'].push(newRow);
+        };
+
+        return chartData;
+      };
+
+      function drawChart(chartData) {
+
+        // Create the data table.
+        var chartData = getChartData(startDate, endDate, pointList);
+        var data = new google.visualization.DataTable(chartData);
+        console.log(chartData);
+
+        // Set chart options
+        var options = {
+          'title': 'How Much Pizza I Ate Last Night',
+          'width': 1000,
+          'height': 800,
+          interpolateNulls: true,
+          crosshair: {
+            trigger: 'both',
+            orientation: 'vertical',
+          },
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+
+      
     </script>
   </head>
 

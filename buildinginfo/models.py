@@ -52,8 +52,8 @@ class Weather(models.Model):
     class Meta:
         unique_together = ('weather_station', 'datetime')
 
-    def __str__(self):
-        return str(self.weather_station)
+    # def __str__(self):
+    #     return str(self.weather_station)
 
     @register.filter
     def to_class_name(self, value):
@@ -123,9 +123,9 @@ class Ismart(models.Model):
     class Meta:
         unique_together = ('building', 'datetime')
 
-    def __str__(self):
-        title = str(self.building)+str('_')+str(self.datetime)
-        return title
+    # def __str__(self):
+    #     title = str(self.building)+str('_')+str(self.datetime)
+    #     return title
 
     @register.filter
     def to_class_name(self, value):

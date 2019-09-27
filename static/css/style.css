@@ -1,3 +1,101 @@
+.clearfix {
+    clear: both;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+.m-1 {
+    margin: 0.5em;
+}
+
+.m-2 {
+    margin: 1em;
+}
+
+.m-3 {
+    margin: 1.5em;
+}
+
+.mx-1 {
+    margin: 0 0.5em;
+}
+
+.mx-2 {
+    margin: 0 1em;
+}
+
+.mx-3 {
+    margin: 0 1.5em;
+}
+
+.my-1 {
+    margin: 0.5em 0;
+}
+
+.my-2 {
+    margin: 1em 0;
+}
+
+.my-3 {
+    margin: 1.5em 0;
+}
+
+.p-1 {
+    padding: 0.5em;
+}
+
+.p-2 {
+    padding: 1em;
+}
+
+.p-3 {
+    padding: 1.5em;
+}
+
+.px-1 {
+    padding: 0 0.5em;
+}
+
+.px-2 {
+    padding: 0 1em;
+}
+
+.px-3 {
+    padding: 0 1.5em;
+}
+
+.py-1 {
+    padding: 0.5em 0;
+}
+
+.py-2 {
+    padding: 1em 0;
+}
+
+.py-3 {
+    padding: 1.5em 0;
+}
+
+.centering {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .hover-opacity-half:hover {
     opacity: 0.5;
 }
+
+.transition {
+    -webkit-transition: all 0.5s ease-out;
+    -moz-transition: all 0.5s ease-out;
+    -o-transition: all 0.5s ease-out;
+    transition: all 0.5s ease-out;
+  }
+

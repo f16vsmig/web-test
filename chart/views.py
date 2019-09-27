@@ -16,23 +16,24 @@ def ChartView(request):
     username = request.user.get_username()
     user_instance = User.objects.get(email=username)
     if user_instance.is_superuser:
-        building_list = Building.objects.all()
+        building_object_list = Building.objects.all()
     else:
-        building_list = Building.objects.filter(author__email=username)
-
-    ismart_fields = field_label_list(Ismart)[3:]
-    weather_fields = field_label_list(Weather)[3:]
+        building_object_list = Building.objects.filter(author__email=username)
+    model_list = [Ismart, Weather]
+    # ismart_fields = field_label_list(Ismart)[3:]
+    # weather_fields = field_label_list(Weather)[3:]
+    # datapoints = ismart_fields + weather_fields
     context = {
-        'building_name': Building.__name__,
-        'ismart_name': Ismart.__name__,
-        'weather_name': Weather.__name__,
-        'building_list': building_list,
-        'ismart_fields': ismart_fields,
-        'weather_fields': weather_fields,
+        'building_object_list': building_object_list,
+        'model_list': model_list,
+        # 'ismart_name': Ismart.__name__,
+        # 'weather_name': Weather.__name__,
+        # 'ismart_fields': ismart_fields,
+        # 'weather_fields': weather_fields,
         'navbar': 'chart',
     }
     # return render(request, 'chart/chart.html', context)
-    return render(request, 'chart/chart_google_test.html', context)
+    return render(request, 'chart/google_chart.html', context)
 
 def ChartData(request):
     start_day = request.GET.get('start-day')
@@ -109,7 +110,7 @@ def GoogleChartData(request):
         timestamp=Concat(
             Value('Date('),
             ExtractYear('datetime'), Value(', '),
-            ExtractMonth('datetime'), Value(', '),
+            ExtractMonth('datetime')-1, Value(', '),
             ExtractDay('datetime'), Value(', '),
             ExtractHour('datetime'), Value(', '),
             ExtractMinute('datetime'), Value(', '),
@@ -119,12 +120,8 @@ def GoogleChartData(request):
     )
     data = queryset.values_list('timestamp', endpoint)
     result = {
-        'cols': [
-            {'id': 'timestamp', 'label': 'timestamp', 'type': 'date'},
-            {'id': building+'-'+model+'-'+endpoint, 'label': building+'-'+model+'-'+endpoint, 'type': 'number'}
-        ],
-        # 'rows': list(data)
-        'rows': dict((x[0], [x[1]]) for x in data)
+        'prop': {'id': datapoint, 'label': building+'-'+model+'-'+endpoint, 'type': 'number'},
+        'data': dict((x[0], x[1]) for x in data)
     }
 
     return HttpResponse(json.dumps(result, ensure_ascii=False), content_type="application/json; charset=utf-8")
