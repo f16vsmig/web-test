@@ -1,27 +1,55 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-info">
-  <a class="navbar-brand font-weight-light" href="/">Energy Benchmark V1</a>
-  <div class="collapse navbar-collapse font-weight-bold" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item {% if navbar == 'buildinginfo' %}active{% endif %}">
-        <a class="nav-link" href="{% url 'buildinginfo:building_list' %}">BuildingInfo&nbsp<i class="far fa-building"></i></a>
-      </li>
-      <li class="nav-item {% if navbar == 'analytics' %}active{% endif %}">
-        <a class="nav-link" href="">Analytics&nbsp<i class="fas fa-file-signature"></i></a>
-      </li>
-      <li class="nav-item {% if navbar == 'chart' %}active{% endif %}">
-        <a class="nav-link" href="{% url 'chart:chart' %}">Chart&nbsp<i class="fas fa-chart-line"></i></a>
-      </li>
-      <li class="nav-item {% if navbar == 'communication' %}active{% endif %}">
-        <a class="nav-link" href="{% url 'board:notice_main' board_name='freeboard' %}">Communication&nbsp<i class="far fa-comments"></i></a>
-      </li>
-      <li class="nav-item {% if navbar == 'manual' %}active{% endif %}">
-        <a class="nav-link" href="#">Manual&nbsp<i class="fas fa-book"></i></a>
-      </li>
+<nav class="" id="navbar">
+  <div id="home">
+    <a class="" id="home" href="/" style="font-size: 25px;">Energy Benchmark V1</a>
+  </div>
+
+  <div class="mx-1" id="main-menu">
+    <a class="mx-1" href="{% url 'buildinginfo:building_list' %}">
+      BuildingInfo&nbsp<i class="far fa-building"></i>
+    </a>
+    <a class="mx-1" href="">
+      Analytics&nbsp<i class="fas fa-file-signature"></i>
+    </a>
+    <a class="mx-1" href="{% url 'chart:chart' %}">
+      Chart&nbsp<i class="fas fa-chart-line"></i>
+    </a>
+    <a class="mx-1" href="{% url 'board:notice_main' board_name='freeboard' %}">
+      Communication&nbsp<i class="far fa-comments"></i>
+    </a>
+    <a class="mx-1" href="#">
+      Manual&nbsp<i class="fas fa-book"></i>
+    </a>
   </div>
 
   {% if user.is_authenticated %}
-  <div class="float-right">
-    <span class="text-light"><a href="{% url 'account:profile' nickname=request.user %}" style="color: white;" title="계정 정보">{{ request.user }}</a>&nbsp;님 환영합니다.&nbsp;&nbsp;<a href="{% url 'account:logout' %}" class="fas fa-sign-out-alt fa-lg text-light" data-toggle="tooltip" data-placement="left" title="로그아웃" style="text-decoration: none;"></a></span>
-  </div>
+    <div class="float-right">
+      <div>
+        <span>
+          <a href="{% url 'account:profile' nickname=request.user %}" title="계정 정보">
+            {{ request.user }}
+          </a>
+        </span>
+        <span>
+          님 환영합니다.
+        </span>
+        <span>
+          <a href="{% url 'account:logout' %}" class="fas fa-sign-out-alt fa-lg text-light" title="로그아웃" style="text-decoration: none;"></a>
+        </span>
+      </div>
+    </div>
   {% endif %}
 </nav>
+
+<style>
+#navbar {
+  padding: 10px;
+  margin: 0;
+  background: green
+}
+
+#navbar div {
+  display: inline;
+}
+
+
+</style>
