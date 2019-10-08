@@ -1,55 +1,61 @@
 <nav class="" id="navbar">
   <div id="home">
-    <a class="" id="home" href="/" style="font-size: 25px;">Energy Benchmark V1</a>
+    <a class="decoration-none" id="home" href="/" style="font-size: 20px; font-weight: 400;">Energy Benchmark V1</a>
   </div>
 
   <div class="mx-1" id="main-menu">
-    <a class="mx-1" href="{% url 'buildinginfo:building_list' %}">
-      BuildingInfo&nbsp<i class="far fa-building"></i>
+
+    <a class="mx-1 decoration-none {% if navbar == 'buildinginfo' %}active{% endif %}" href="{% url 'buildinginfo:building_list' %}">
+      BuildingInfo<i class="far fa-building mx-1"></i>
     </a>
-    <a class="mx-1" href="">
-      Analytics&nbsp<i class="fas fa-file-signature"></i>
+    <a class="mx-1 decoration-none {% if navbar == 'analytics' %}active{% endif %}" href="">
+      Analytics<i class="fas fa-file-signature mx-1"></i>
     </a>
-    <a class="mx-1" href="{% url 'chart:chart' %}">
-      Chart&nbsp<i class="fas fa-chart-line"></i>
+    <a class="mx-1 decoration-none {% if navbar == 'chart' %}active{% endif %}" href="{% url 'chart:chart' %}">
+      Chart<i class="fas fa-chart-line mx-1"></i>
     </a>
-    <a class="mx-1" href="{% url 'board:notice_main' board_name='freeboard' %}">
-      Communication&nbsp<i class="far fa-comments"></i>
+    <a class="mx-1 decoration-none {% if navbar == 'board' %}active{% endif %}" href="{% url 'board:notice_main' board_name='freeboard' %}">
+      Communication<i class="far fa-comments mx-1"></i>
     </a>
-    <a class="mx-1" href="#">
-      Manual&nbsp<i class="fas fa-book"></i>
+    <a class="mx-1 decoration-none {% if navbar == 'manual' %}active{% endif %}" href="#">
+      Manual<i class="fas fa-book mx-1"></i>
     </a>
   </div>
 
   {% if user.is_authenticated %}
-    <div class="float-right">
-      <div>
-        <span>
-          <a href="{% url 'account:profile' nickname=request.user %}" title="계정 정보">
-            {{ request.user }}
-          </a>
-        </span>
-        <span>
-          님 환영합니다.
-        </span>
-        <span>
-          <a href="{% url 'account:logout' %}" class="fas fa-sign-out-alt fa-lg text-light" title="로그아웃" style="text-decoration: none;"></a>
-        </span>
-      </div>
+    <div style="position: absolute; top: 50%; right: 20px; transform:translateY(-50%);">
+      <span>
+        <a class="decoration-none" href="{% url 'account:profile' nickname=request.user %}" title="계정 정보">
+          {{ request.user }}
+        </a>
+      </span>
+      <span>님 환영합니다.</span>
+      <span>
+        <a class="decoration-none" href="{% url 'account:logout' %}"><i class="fas fa-sign-out-alt fa-lg text-light" title="로그아웃"></i></a>
+      </span>
     </div>
   {% endif %}
 </nav>
 
 <style>
 #navbar {
+  position: relative;
   padding: 10px;
   margin: 0;
-  background: green
+  background: rgba(50,50,50,0.9);
+  color: white;
 }
 
 #navbar div {
   display: inline;
 }
 
+#navbar a:hover {
+  color: darkgray;
+}
+
+#navbar .active {
+  color: darkgray;
+}
 
 </style>

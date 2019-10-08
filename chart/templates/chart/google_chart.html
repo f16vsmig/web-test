@@ -4,109 +4,111 @@
 
 {% load chart_extras %}
 
-<div class="py-2" style="display: table; width: 100%; min-height: calc(100vh - 56px - 25px);">
-  <div class="align-top pr-2" style="display: table-cell; width: 250px; min-height: 60vh;">
-    <div class="mx-auto align-top ow p-2 m-2 bg-white">
-      <!-- 검색기능 구현 -->
-      <div class="input-group mx-2 border-bottom" style="width: 210px; height: 40px;">
-        <label for="input-search" class="sr-only">Search Tree</label>
+<div class="py-1" style="display: table; width: 100%;">
+
+  <div class="" style="display: table-cell; width: 250px; vertical-align: top;">
+
+    <!-- 검색기능 구현 -->
+    <div class="mx-1 p-1 bg-white" style="height: 30px;">
+      <div class="" style="display: inline-block;">
         <input type="input" class="form-control form-control-sm" id="input-search" placeholder="검색어를 입력하세요." autocomplete="off">
-        <div class ="input-group-append">
-          <button type="button" class="btn btn-secondary btn-sm mb-2" id="btn-clear-search">초기화</button>
-        </div>
+        <label for="input-search" class="sr-only">Search Tree</label>
       </div>
-    
-      <!-- 트리창 구역 -->
-      <div class="overflow-auto bg-white mx-2" id="data-points-tree" style="width: 210px; height: calc(100vh - 180px); overflow: auto;" ondragstart="dragStart(event)" ondragend="dragEnd(event)">
-        <ul>
-          {% for building in building_object_list %}
-            <li>
-              <input class="tree-depth-0" type="checkbox" id="{{ building.pk }}-{{ building.name }}" name="datapoint" value="{{ building.name }}">
-              <label for="{{ building.pk }}-{{ building.name }}">
-                <span style="vertical-align: middle;">{{ building.name }}</span>
-              </label>
-              <a><i class="far fa-folder" onclick="showElement()" target-element="{{ building.pk }}-depth-1"></i></a>
-            </li>
-            <li class="hide transition" id="{{ building.pk }}-depth-1">
-              {% for model in model_list %}
-                <ul>
-                  <li>
-                    <input class="tree-depth-1" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}" name="datapoint" value="{{ model|class_name }}">
-                    <label for="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}">
-                      <span style="vertical-align: middle;">{{ model|class_name }}</span>
-                    </label>
-                    <a><i class="far fa-folder" onclick="showElement()" target-element="{{ building.pk }}-{{ model|class_name }}-depth-2"></i></a>
-                  </li>
-                  <li class="hide transition" id="{{ building.pk }}-{{ model|class_name }}-depth-2">
-                    <ul>
-                    {% for field in model|fields %}
-                      <li>
-                        <input class="tree-depth-2 endpoint" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}" name="datapoint" value="{{ field }}">
-                        <label for="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}">
-                          <span style="vertical-align: middle;">{{ field }}</span>
-                        </label>
-                      </li>
-                    {% endfor %}
-                    </ul>
-                  </li>
-                </ul>
-              {% endfor %}
-            </li>
-          {% endfor %}
-        </ul>
+      <div class ="input-group-append" style="display: inline-block;">
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-search">초기화</button>
       </div>
     </div>
+    
+    <!-- 트리창 구역 -->
+    <div class="mx-1 bg-white" id="data-points-tree" style="height: calc(100vh - 130px); overflow: auto;" draggable="True" ondragstart="dragStart(event)" ondragend="dragEnd(event)">
+      <ul style="margin-top: 0;">
+        {% for building in building_object_list %}
+          <li>
+            <input class="tree-depth-0 branch" type="checkbox" id="{{ building.pk }}-{{ building.name }}" name="{{ building.pk }}-{{ building.name }}" value="{{ building.name }}" onclick="datapointCheck()">
+            <label for="{{ building.pk }}-{{ building.name }}">
+              <span style="vertical-align: middle;">{{ building.name }}</span>
+            </label>
+            <a class="far fa-folder decoration-none" href="javascript:void(0)" onclick="showElement()" target-element="{{ building.pk }}-depth-1"></a>
+          </li>
+          <li class="hide" id="{{ building.pk }}-depth-1">
+            {% for model in model_list %}
+              <ul>
+                <li>
+                  <input class="tree-depth-1 branch" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}" name="{{ building.pk }}-{{ building.name }}" value="{{ model|class_name }}" onclick="datapointCheck()">
+                  <label for="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}">
+                    <span style="vertical-align: middle;">{{ model|class_name }}</span>
+                  </label>
+                  <a class="far fa-folder decoration-none" href="javascript:void(0)" onclick="showElement()" target-element="{{ building.pk }}-{{ model|class_name }}-depth-2"></a>
+                </li>
+                <li class="hide" id="{{ building.pk }}-{{ model|class_name }}-depth-2">
+                  <ul>
+                  {% for field in model|fields %}
+                    <li>
+                      <input class="tree-depth-2 endpoint" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}" name="{{ building.pk }}-{{ building.name }}" value="{{ field }}" onclick="datapointCheck()">
+                      <label for="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}">
+                        <span style="vertical-align: middle;">{{ field }}</span>
+                      </label>
+                    </li>
+                  {% endfor %}
+                  </ul>
+                </li>
+              </ul>
+            {% endfor %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
   </div>
-  <div class="mx-auto align-top" style="display: table-cell;">
-    <div class="row justify-content-between bg-white mx-2 mt-2 p-2">
-      <div class="col-9">
-        <div class="form-inline">
-          <div class="btn-group">
-            <button class="btn btn-outline-secondary btn-sm date-button" id="y-sub">-Y</button>
-            <button class="btn btn-outline-secondary btn-sm date-button" id="m-sub">-M</button>
-            <button class="btn btn-outline-secondary btn-sm date-button" id="d-sub">-D</button>
-          </div>
-          <div class="input-group input-group-sm ml-2">
-            <div class="input-group-prepend">
-              <span class="input-group-text">시작일</span>
-            </div>
-            <input class="form-control datepicker" id="start-day" name="start-day" required type="text" style="width: 120px;">
-          </div>
-          <div class="input-group input-group-sm ml-2">
-            <div class="input-group-prepend">
-              <span class="input-group-text">종료일</span>
-            </div>
-            <input class="form-control datepicker" id="end-day" name="end-day" required type="text" style="width: 120px;">
-          </div>
-          <div class="btn-group ml-2">
-            <button class="btn btn-outline-secondary btn-sm date-button" id="y-add">+Y</button>
-            <button class="btn btn-outline-secondary btn-sm date-button" id="m-add">+M</button>
-            <button class="btn btn-outline-secondary btn-sm date-button" id="d-add">+D</button>
-          </div>
-          <div>
-            <button type="button" class="btn btn-success btn-sm ml-2" id="chart-reload">업데이트</button>
-          </div>
+
+  <div class="" style="display: table-cell;">
+
+    <!-- 툴박스 -->
+    <div class="mx-1 p-1 bg-white" id="chart-tool-box" style="height: 50px;">
+      <div style="display: inline-block;">
+        <div class="input-group input-group-sm ml-2">
+          <input class="form-control datepicker" id="start-day" name="start-day" required type="text" style="width: 120px;" placeholder="start" onclick="datepicker()">
+        </div>
+        <div class="" style="text-align: center;">
+          <button class="btn btn-outline-secondary btn-sm date-button" id="y-sub">-Y</button>
+          <button class="btn btn-outline-secondary btn-sm date-button" id="m-sub">-M</button>
+          <button class="btn btn-outline-secondary btn-sm date-button" id="d-sub">-D</button>
         </div>
       </div>
-      <div class="col-3 text-right" style="font-size: 20px;">
-        <button type="button" class="btn btn-outline-danger btn-sm" id="sync" data-toggle="button" aria-pressed="false" autocomplete="off" title="차트동기화">
+      <div style="display: inline-block; vertical-align: top; font-size: 18px;">
+        ~
+      </div>
+      <div style="display: inline-block;">
+        <div class="">
+          <input class="form-control datepicker" id="end-day" name="end-day" required type="text" style="width: 120px;" placeholder="end" onclick="datepicker()">
+        </div>
+        <div class="" style="text-align: center;">
+          <button class="btn btn-outline-secondary btn-sm date-button" id="y-add">+Y</button>
+          <button class="btn btn-outline-secondary btn-sm date-button" id="m-add">+M</button>
+          <button class="btn btn-outline-secondary btn-sm date-button" id="d-add">+D</button>
+        </div>
+      </div>
+      <div class="mx-1" style="display: inline-block; vertical-align: top;">
+        <button type="button" class="btn btn-success btn-sm ml-2" id="chart-reload" style="width: 80px; height: 4;">업데이트</button>
+      </div>
+      <div class="mx-1" style="display: inline-block; vertical-align: top;">
+        <button class="" id="sync" data-toggle="button" aria-pressed="false" autocomplete="off" title="차트동기화">
           Sync
         </button>
-        <span>&nbsp;&nbsp;</span>
-        <a class="btn btn-outline-info btn-sm" href="#" id="addChart" role="button" title="차트추가"><i class="far fa-plus"></i></a>
-        <a class="btn btn-outline-info btn-sm" href="#" id="removeChart" role="button" title="차트삭제"><i class="far fa-minus"></i></a>
+        <button class="" id="addChart" title="차트추가">+</button>
+        <button class="" id="removeChart" title="차트삭제">-</button>
       </div>
     </div>
-    <!-- 차트 구현 -->
-    <div class="mx-2 mt-2 bg-white" id="charts_container" style="min-height: calc(100vh - 180px); padding: 10px;">
-      <div class="chart-tool text-right" style="height: 20px;">
-        <a class="delete-chart ml-2" id="chart-0-delete" href="#" title="닫기" style="visibility: hidden;"><i class="fas fa-times"></i></a>
-      </div>
-      <div class="chart" id="chart-0" style="height: calc(100vh - 200px - 20px); display: flex; align-items: center; justify-content: center;">
-        <a class="draw-chart" id="chart-0-draw" href="#" draggable="false"><i class="fas fa-chart-line fa-5x"></i></a>
+
+    <!-- 차트 그리기 영역 -->
+    <div class="mx-1 centering bg-white" id="charts_container" style="height: calc(100vh - 150px);">
+      <div class="chart centering" id="chart-0">
+        <a class="draw-chart fas fa-chart-line fa-5x decoration-none" id="chart-0-draw" href="javascript:void(0)" onclick="test()" draggable="false"></a>
       </div>
     </div>
+
   </div>
+
 </div>
 
 <style>
@@ -115,7 +117,19 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-left: 10px;
+}
+
+#data-points-tree li {
+  margin-bottom: 3px;
+  padding-left: 12px;
+}
+
+#data-points-tree ul {
+  padding-left: 0;
+}
+
+#data-points-tree li > ul {
+  border-left: solid darkgray 1px;
 }
 
 #data-points-tree input, label {
@@ -136,6 +150,9 @@
   cursor: pointer;
 }
 
+.bg-white {
+  background: white;
+}
 
 </style>
 
@@ -158,31 +175,84 @@
     };
   };
 
+  function getChildrenId() {
+    var thisEl = event.srcElement;
+  };
+
+
+  function datapointCheck() {
+    var thisEl = event.srcElement;
+    var name = thisEl.getAttribute('name');
+    var checkPoints = document.getElementsByName(name);
+
+    if (thisEl.checked == true && thisEl.classList.contains('branch')) {
+      for (var i=0; i<checkPoints.length; i++) {
+        var point = checkPoints[i];
+        if (point.id.match(thisEl.id)) {
+          point.checked = true;
+        };
+      };
+    } else if (thisEl.checked == false && thisEl.classList.contains('branch')) {
+      for (var i=0; i<checkPoints.length; i++) {
+        var point = checkPoints[i];
+        if (point.id.match(thisEl.id)) {
+          point.checked = false;
+        };
+      };
+    } else if (thisEl.classList.contains('endpoint') && thisEl.checked == true) {
+      
+      if (checkPoints.getElementsByClassName('endpoint').length) {
+
+      }
+
+    } else if (thisEl.classList.contains('endpoint') && thisEl.checked == false) {
+      for (var i=0; i<checkPoints.length; i++) {
+        var point = checkPoints[i];
+        if (thisEl.id.match(point.id)) {
+          point.checked = false;
+        };
+      };
+    };
+  };
+
 </script>
 
 <!-- 구글차트 구현 -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <script>
-  // collapse 클래스 접어놓기
-  // collapseChildren();
-</script>
-
-<script>
   startDate = '2018-01-01';
   endDate = '2018-01-30';
-  pointList = ['23-sam-Ismart-kWh', '23-sam-Ismart-kW_peak', '23-sam-Ismart-kVarh_lag']
+  // pointList = ['23-sam-Ismart-kWh', '23-sam-Ismart-kW_peak', '23-sam-Ismart-kVarh_lag']
 
   // Load the Visualization API and the corechart package.
   google.charts.load('current', {'packages':['corechart']});
 
   // Set a callback to run when the Google Visualization API is loaded.
-  google.charts.setOnLoadCallback(drawChart);
+  // google.charts.setOnLoadCallback(drawChart);
+
+
+  var endpoints = function getEndpoints() {
+    var checks = document.getElementsByClassName('endpoint');
+    var result = [];
+    for (var i=0; i<checks.length; i++) {
+      if (checks[i].checked) {
+        result.push(checks[i].id);
+      };
+    };
+    return result;
+  };
+
+  function test() {
+    console.log(endpoints());
+  }
 
   // Callback that creates and populates a data table,
   // instantiates the pie chart, passes in the data and
   // draws it.
   function getChartData(startDate, endDate, pointList) {
+    var startDay = document.getElementById('start-day').value;
+    var endDay = document.getElementById('end-day').value;
     var totalJson = {};
     var keys = [];
     for (var i=0; i<pointList.length; i++) {
@@ -248,6 +318,167 @@
 </script>
 
  
- 
+<script type="text/javascript">
+
+  function dateInput() {
+    var targetId = document.getElementById('datepicker').getAttribute('targetId')
+    var targetEl = document.getElementById(targetId)
+    document.querySelectorAll('#datepicker td.day')
+    .forEach(e => e.addEventListener("click", function() {
+      var tbCalendarYM = document.getElementById("tbCalendarYM")
+      var year = tbCalendarYM.getAttribute('year')
+      var month = tbCalendarYM.getAttribute('month')
+      var day = e.innerText
+      targetEl.value = year + '-' + month + '-' + day
+      popup.remove()
+    }));
+  }
+
+  function datepicker() {
+    var thisEl = event.srcElement
+    var popup = document.createElement('div')
+    document.body.appendChild(popup)
+    popup.setAttribute('id', 'popup')
+    popup.style.position = 'absolute'
+    popup.style.top = 0
+    popup.style.left = 0
+    popup.style.width = '100%'
+    popup.style.height = '100%'
+
+    popup.innerHTML = htmlCalendar()
+    updateCal()
+    var pos = thisEl.getBoundingClientRect()
+    var cal = document.getElementById('datepicker')
+    cal.setAttribute('targetId', thisEl.getAttribute('id'))
+    cal.style.position = 'absolute'
+    cal.style.background = 'white'
+    cal.style.top = pos.bottom + 'px'
+    cal.style.left = pos.left + 'px'
+
+    dateInput()
+
+    popup.addEventListener('click', function(e) {
+      var clickInside = cal.contains(e.target)
+      if (!clickInside) {
+        popup.remove()
+      }
+    })
+  }
+
+  function htmlCalendar() {
+    var cal = '<table id="datepicker">'
+    cal += '<tbody>'
+    cal += '<tr id="toolbar">'
+    cal += '<td onclick="prevYear()">&lang;&lang;</td>'
+    cal += '<td onclick="prevMonth()">&lang;</td>'
+    cal += '<td align="center" id="tbCalendarYM" colspan="3" year="yyyy" month="mm">yyyy년 m월</td>'
+    cal += '<td onclick="nextMonth()">&rang;</td>'
+    cal += '<td onclick="nextYear()">&rang;&rang;</td>'
+    cal += '</tr>'
+    cal += '<tr>'
+    cal += '<td class="weekday">일</td>'
+    cal += '<td>월</td>'
+    cal += '<td>화</td>'
+    cal += '<td>수</td>'
+    cal += '<td>목</td>'
+    cal += '<td>금</td>'
+    cal += '<td>토</td>'
+    cal += '</tr>'
+    cal += '</tbody>'
+    cal += '</table>'
+    return cal
+  }
+
+  function prevMonth() {
+    var tbCalendarYM = document.getElementById("tbCalendarYM")
+    var year = tbCalendarYM.getAttribute('year')
+    var month = tbCalendarYM.getAttribute('month') - 1
+    var date = new Date(year, month - 1)
+    updateCal(date)
+    dateInput()
+  }
+
+  function prevYear() {
+    var tbCalendarYM = document.getElementById("tbCalendarYM")
+    var year = tbCalendarYM.getAttribute('year')
+    var month = tbCalendarYM.getAttribute('month') - 1
+    var date = new Date(year - 1, month)
+    updateCal(date)
+    dateInput()
+  }
+
+  function nextMonth() {
+    var tbCalendarYM = document.getElementById("tbCalendarYM")
+    var year = tbCalendarYM.getAttribute('year')
+    var month = tbCalendarYM.getAttribute('month') - 1
+    var date = new Date(year, month + 1)
+    updateCal(date)
+    dateInput()
+  }
+
+  function nextYear() {
+    var tbCalendarYM = document.getElementById("tbCalendarYM")
+    var year = parseInt(tbCalendarYM.getAttribute('year')) //convert string to int
+    var month = tbCalendarYM.getAttribute('month') - 1
+    var date = new Date(year + 1, month)
+    updateCal(date)
+    dateInput()
+  }
+
+  function updateCal(date) {
+    var date = date || new Date()
+    var today = new Date()
+    var doMonth = new Date(date.getFullYear(), date.getMonth(), 1)
+    var lastDate = new Date(date.getFullYear(), date.getMonth()+1, 0)
+    var tbCalendar = document.getElementById("datepicker")
+    var tbCalendarYM = document.getElementById("tbCalendarYM")
+    tbCalendarYM.innerHTML = date.getFullYear() + "년 " + (date.getMonth() + 1) + "월"
+    tbCalendarYM.setAttribute('year', date.getFullYear())
+    tbCalendarYM.setAttribute('month', date.getMonth() + 1)
+
+    while (tbCalendar.rows.length > 2) {
+      tbCalendar.deleteRow(tbCalendar.rows.length-1)
+    }
+    var row = null
+    row = tbCalendar.insertRow()
+    var cnt = 0
+    for (i=0; i<doMonth.getDay(); i++) {
+      cell = row.insertCell()
+      cnt = cnt + 1
+    }
+    for (i=1; i<=lastDate.getDate(); i++) {
+      cell = row.insertCell()
+      cell.innerHTML = i
+      cell.classList.add('day')
+      cnt = cnt + 1
+      if (cnt % 7 == 1) {
+        cell.innerHTML = "<font color=#F79DC2>" + i
+      }
+      if (cnt % 7 == 0){
+        cell.innerHTML = "<font color=skyblue>" + i
+        row = tbCalendar.insertRow()
+      }
+      if (date.getFullYear() == today.getFullYear() && date.getMonth() == today.getMonth() && i == today.getDate()) {
+        cell.bgColor = "#FAF58C"
+      }
+    }
+  }
+
+</script>
+
+<style>
+#datepicker {
+  border: solid darkgray 1px; 
+}
+#datepicker td {
+  text-align: center;
+}
+#datepicker td.day:hover, #toolbar td:hover {
+  color: white;
+  background: gray;
+  cursor: pointer;
+}
+
+</style>
 
 {% endblock %}
