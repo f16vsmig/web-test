@@ -24,7 +24,7 @@
       <ul style="margin-top: 0;">
         {% for building in building_object_list %}
           <li>
-            <input class="tree-depth-0 branch" type="checkbox" id="{{ building.pk }}-{{ building.name }}" name="{{ building.pk }}-{{ building.name }}" value="{{ building.name }}" onclick="datapointCheck()">
+            <input class="branch" type="checkbox" id="{{ building.pk }}-{{ building.name }}" name="{{ building.pk }}-{{ building.name }}" value="{{ building.name }}" onclick="datapointCheck()" depth="0">
             <label for="{{ building.pk }}-{{ building.name }}">
               <span style="vertical-align: middle;">{{ building.name }}</span>
             </label>
@@ -34,7 +34,7 @@
             {% for model in model_list %}
               <ul>
                 <li>
-                  <input class="tree-depth-1 branch" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}" name="{{ building.pk }}-{{ building.name }}" value="{{ model|class_name }}" onclick="datapointCheck()">
+                  <input class="branch" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}" name="{{ building.pk }}-{{ building.name }}" value="{{ model|class_name }}" onclick="datapointCheck()" parent="{{ building.pk }}-{{ building.name }}" depth="1">
                   <label for="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}">
                     <span style="vertical-align: middle;">{{ model|class_name }}</span>
                   </label>
@@ -44,7 +44,7 @@
                   <ul>
                   {% for field in model|fields %}
                     <li>
-                      <input class="tree-depth-2 endpoint" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}" name="{{ building.pk }}-{{ building.name }}" value="{{ field }}" onclick="datapointCheck()">
+                      <input class="endpoint" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}" name="{{ building.pk }}-{{ building.name }}" value="{{ field }}" onclick="datapointCheck()" parent="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}" depth="2">
                       <label for="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}">
                         <span style="vertical-align: middle;">{{ field }}</span>
                       </label>
@@ -66,27 +66,13 @@
     <!-- 툴박스 -->
     <div class="mx-1 p-1 bg-white" id="chart-tool-box" style="height: 50px;">
       <div style="display: inline-block;">
-        <div class="input-group input-group-sm ml-2">
-          <input class="form-control datepicker" id="start-day" name="start-day" required type="text" style="width: 120px;" placeholder="start" onclick="datepicker()">
-        </div>
-        <div class="" style="text-align: center;">
-          <button class="btn btn-outline-secondary btn-sm date-button" id="y-sub">-Y</button>
-          <button class="btn btn-outline-secondary btn-sm date-button" id="m-sub">-M</button>
-          <button class="btn btn-outline-secondary btn-sm date-button" id="d-sub">-D</button>
-        </div>
+        <input class="form-control datepicker" id="start-day" name="start-day" required type="text" style="width: 120px;" placeholder="시작일" onclick="datepicker()">
       </div>
-      <div style="display: inline-block; vertical-align: top; font-size: 18px;">
+      <div style="display: inline-block;">
         ~
       </div>
       <div style="display: inline-block;">
-        <div class="">
-          <input class="form-control datepicker" id="end-day" name="end-day" required type="text" style="width: 120px;" placeholder="end" onclick="datepicker()">
-        </div>
-        <div class="" style="text-align: center;">
-          <button class="btn btn-outline-secondary btn-sm date-button" id="y-add">+Y</button>
-          <button class="btn btn-outline-secondary btn-sm date-button" id="m-add">+M</button>
-          <button class="btn btn-outline-secondary btn-sm date-button" id="d-add">+D</button>
-        </div>
+        <input class="form-control datepicker" id="end-day" name="end-day" required type="text" style="width: 120px;" placeholder="마지막일" onclick="datepicker()">
       </div>
       <div class="mx-1" style="display: inline-block; vertical-align: top;">
         <button type="button" class="btn btn-success btn-sm ml-2" id="chart-reload" style="width: 80px; height: 4;">업데이트</button>
@@ -172,48 +158,52 @@
       targetEl.classList.add('hide');
       thisEl.classList.remove('fa-folder-open');
       thisEl.classList.add('fa-folder');
-    };
-  };
+    }
+  }
 
   function getChildrenId() {
     var thisEl = event.srcElement;
-  };
-
+  }
 
   function datapointCheck() {
     var thisEl = event.srcElement;
     var name = thisEl.getAttribute('name');
     var checkPoints = document.getElementsByName(name);
-
-    if (thisEl.checked == true && thisEl.classList.contains('branch')) {
-      for (var i=0; i<checkPoints.length; i++) {
-        var point = checkPoints[i];
-        if (point.id.match(thisEl.id)) {
-          point.checked = true;
-        };
-      };
-    } else if (thisEl.checked == false && thisEl.classList.contains('branch')) {
-      for (var i=0; i<checkPoints.length; i++) {
-        var point = checkPoints[i];
-        if (point.id.match(thisEl.id)) {
-          point.checked = false;
-        };
-      };
-    } else if (thisEl.classList.contains('endpoint') && thisEl.checked == true) {
-      
-      if (checkPoints.getElementsByClassName('endpoint').length) {
-
+    // branch를 클릭하면 하위의 모든 체크박스가 true 또는 false
+    if (thisEl.classList.contains('branch')) {
+      if (thisEl.checked == true) {
+        for (var i=0; i<checkPoints.length; i++) {
+          var point = checkPoints[i]
+          if (point.id.match(thisEl.id)) {
+            point.checked = true
+          }
+        }
+      } else if (thisEl.checked == false) {
+        for (var i=0; i<checkPoints.length; i++) {
+          var point = checkPoints[i]
+          if (point.id.match(thisEl.id)) {
+            point.checked = false
+          }
+        }
       }
-
-    } else if (thisEl.classList.contains('endpoint') && thisEl.checked == false) {
-      for (var i=0; i<checkPoints.length; i++) {
-        var point = checkPoints[i];
-        if (thisEl.id.match(point.id)) {
-          point.checked = false;
-        };
-      };
-    };
-  };
+    }
+    // 상위의 체크박스가 true 또는 false가 됨
+    var chk = thisEl
+    var depth = chk.getAttribute('depth')
+    for (var i=0; i<depth; i++) {
+      if (chk.getAttribute('parent')) {
+        var parentName = chk.getAttribute('parent')
+        var lenUnchked = document.querySelectorAll('input[parent="' + parentName + '"][type="checkbox"]:not(:checked)').length
+        var parentEl = document.getElementById(parentName)
+        if (lenUnchked == 0) {
+          parentEl.checked = true
+        } else if (lenUnchked > 0) {
+          parentEl.checked = false
+        }
+        chk = parentEl
+      }
+    }
+  }
 
 </script>
 
@@ -451,14 +441,14 @@
       cell.innerHTML = i
       cell.classList.add('day')
       cnt = cnt + 1
-      if (cnt % 7 == 1) {
+      if (cnt % 7 == 1) { // Sunday
         cell.innerHTML = "<font color=#F79DC2>" + i
       }
-      if (cnt % 7 == 0){
+      if (cnt % 7 == 0){ // Saturday
         cell.innerHTML = "<font color=skyblue>" + i
         row = tbCalendar.insertRow()
       }
-      if (date.getFullYear() == today.getFullYear() && date.getMonth() == today.getMonth() && i == today.getDate()) {
+      if (date.getFullYear() == today.getFullYear() && date.getMonth() == today.getMonth() && i == today.getDate()) { // today
         cell.bgColor = "#FAF58C"
       }
     }
