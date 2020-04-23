@@ -1,64 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="row mx-auto justify-content-center align-items-center" style="min-height: calc(100vh - 56px - 25px);">
-    <div class="col">
-        <div class="d-flex align-items-center justify-content-center">
-            <div class="menu-card border bg-light">
-                <a class="text-secondary" href="{% url 'buildinginfo:building_list' %}">
-                    <h2>Building Information&nbsp;<i class="fas fa-angle-double-right"></i></h2>
-                    <small class="font-weight-light">새로운 빌딩 정보를 등록하여 체계적인 에너지 관리를 시작하세요.</small>
-                </a>
-                <p class="mt-4 font-weight-light">
-                    현재 등록된 빌딩 수
-                    <span class="badge badge-secondary">14</span>    
-                </p>
-            </div>
-            <div class="menu-card border bg-light">
-                    <a class="text-secondary" href="{% url 'buildinginfo:building_list' %}">
-                        <h2>Analytics&nbsp;<i class="fas fa-angle-double-right"></i></h2>
-                        <small class="font-weight-light">벤치마킹 분석을 통해 에너지 성능을 확인하세요.</small>
-                    </a>
-                <p class="mt-4 font-weight-light">
-                    벤치마킹 분석 결과
-                    <span class="badge badge-secondary">14</span>    
-                </p>
-            </div>
-        </div>
-        <div class="d-flex align-items-center justify-content-center">
-            <div class="menu-card border bg-light">
-                <a class="text-secondary" href="{% url 'buildinginfo:building_list' %}">
-                    <h2>Chart&nbsp;<i class="fas fa-angle-double-right"></i></h2>
-                    <small class="font-weight-light">효율적인 차트도구로 에너지 소비 트랜드를 확인하세요.</small>
-                    </a>
-                <p class="mt-4 font-weight-light">
-                    벤치마킹 분석 결과
-                    <span class="badge badge-secondary">14</span>    
-                </p>
-            </div>
-            <div class="menu-card border bg-light">
-                <a class="text-secondary" href="{% url 'buildinginfo:building_list' %}">
-                    <h2>Communication&nbsp;<i class="fas fa-angle-double-right"></i></h2>
-                    <small class="font-weight-light">궁금한 것을 질문하고 새로운 정보를 공유하세요.</small>
-                </a>
-                <p class="mt-4 font-weight-light">
-                    <span>새로 등록된 글</span>
-                    <span class="badge badge-secondary">14</span><br>
-                    <span>내가 쓴 글</span>
-                    <span class="badge badge-secondary">14</span>
-                </p>
-            </div>
-        </div>
-    </div>
+<div class="item-flex-1-1-auto flex-xy-center mt-4">
+
+  <div class="menu-card m-3">
+    <a class="text-secondary" href="{% url 'buildinginfo:building_list' %}">
+      <h2>Building Information&nbsp;<i class="fas fa-angle-double-right"></i></h2>
+      <small class="font-weight-light">새로운 빌딩 정보를 등록하여 체계적인 에너지 관리를 시작하세요.</small>
+    </a>
+    <p class="mt-4 font-weight-light">
+      현재 등록된 빌딩 수
+      <span class="badge badge-secondary">14</span>
+    </p>
+  </div>
+
+  <div class="menu-card m-3">
+    <a class="text-secondary" href="{% url 'buildinginfo:building_list' %}">
+      <h2>Analytics&nbsp;<i class="fas fa-angle-double-right"></i></h2>
+      <small class="font-weight-light">벤치마킹 분석을 통해 에너지 성능을 확인하세요.</small>
+    </a>
+    <p class="mt-4 font-weight-light">
+      벤치마킹 분석 결과
+      <span class="badge badge-secondary">14</span>
+    </p>
+  </div>
+
+
+  <div class="menu-card m-3">
+    <a class="text-secondary" href="{% url 'buildinginfo:building_list' %}">
+      <h2>Chart&nbsp;<i class="fas fa-angle-double-right"></i></h2>
+      <small class="font-weight-light">효율적인 차트도구로 에너지 소비 트랜드를 확인하세요.</small>
+    </a>
+    <p class="mt-4 font-weight-light">
+      벤치마킹 분석 결과
+      <span class="badge badge-secondary">14</span>
+    </p>
+  </div>
+
+  <div class="menu-card m-3">
+    <a class="text-secondary" href="{% url 'buildinginfo:building_list' %}">
+      <h2>Communication&nbsp;<i class="fas fa-angle-double-right"></i></h2>
+      <small class="font-weight-light">궁금한 것을 질문하고 새로운 정보를 공유하세요.</small>
+    </a>
+    <p class="mt-4 font-weight-light">
+      <span>새로 등록된 글</span>
+      <span class="badge badge-secondary">14</span><br />
+      <span>내가 쓴 글</span>
+      <span class="badge badge-secondary">14</span>
+    </p>
+  </div>
 </div>
 
+
 <style>
-.menu-card {
-    width: 27em;
-    height: 13em;
+  .menu-card {
+    background: white;
+    border: solid 1px black;
+    border-radius: 5px;
+    width: 18em;
+    height: 400px;
     padding: 1em;
     margin: 1em;
-}
+  }
 </style>
 
 {% endblock %}

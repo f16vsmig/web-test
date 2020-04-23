@@ -1,53 +1,65 @@
-<div class="row py-2">
+<div class="flex-x-between flex-y-center sticky-top bg-white px-2 py-1" id="sub-menu" style="z-index: 999;">
 
   <!-- 메뉴 링크 모음 -->
-  <div class="col-6">
-    <div class="btn-group">
-      <a class="btn btn-outline-secondary btn-sm{% if 'detail' in request.path %} active{% endif %}" href="{% url 'buildinginfo:building_detail' pk=building_obj.pk %}">빌딩정보</a>
-      <a class="btn btn-outline-secondary btn-sm{% if 'calendar' in request.path %} active{% endif %}" href="{% url 'buildinginfo:building_calendar' pk=building_obj.pk %}">일정관리</a>
-      <a class="btn btn-outline-secondary btn-sm{% if 'work' in request.path %} active{% endif %}" href="#">작업의뢰</a>
-      <a class="btn btn-outline-secondary btn-sm{% if 'notice' in request.path %} active{% endif %}" href="{% url 'buildinginfo:building_notice' pk=building_obj.pk %}">공지사항</a>
+  <div class="building-info-menu">
+    <div class="flex-x-between flex-y-center">
+      <a
+        class="mx-1 decoration-none {% if 'detail' in request.path %}active{% endif %}"
+        href="{% url 'buildinginfo:building_detail' pk=building_object.pk %}"
+      >빌딩정보</a>
+      <a
+        class="mx-1 decoration-none {% if 'calendar' in request.path %}active{% endif %}"
+        href="{% url 'buildinginfo:building_calendar' pk=building_object.pk %}"
+      >일정관리</a>
+      <a
+        class="mx-1 decoration-none {% if 'task' in request.path %}active{% endif %}"
+        href="{% url 'tasks:tasks' pk=building_object.pk %}?status=ISS"
+      >작업의뢰</a>
+      <a
+        class="mx-1 decoration-none {% if 'board' in request.path %}active{% endif %}"
+        href="{% url 'board:building_board' pk=building_object.pk %}"
+      >커뮤니티</a>
     </div>
   </div>
 
 
-  <!-- 메뉴 커스텀 영역 -->
-  <div class="col-6 pb-0 text-right">
+  <!-- 추가 메뉴 영역 -->
+  <div class="">
 
     <!-- 빌딩정보 메뉴 -->
-    {% url 'buildinginfo:building_detail' pk=building_obj.pk as building_detail %}
-    {% url 'buildinginfo:building_detail_table' pk=building_obj.pk as building_detail_table %}
+    {% url 'buildinginfo:building_detail' pk=building_object.pk as building_detail %}
+    {% url 'buildinginfo:building_detail_table' pk=building_object.pk as building_detail_table %}
+
     {% if request.path == building_detail or request.path == building_detail_table %}
-      <a class="btn btn-outline-secondary btn-sm{% if 'tableview' not in request.path %} active{% endif %}" href="{% url 'buildinginfo:building_detail' pk=building_obj.pk %}"><i class="fas fa-th-large"></i></a>
-      <a class="btn btn-outline-secondary btn-sm{% if 'tableview' in request.path %} active{% endif %}" href="{% url 'buildinginfo:building_detail_table' pk=building_obj.pk %}"><i class="fas fa-th-list"></i></a>
+      <a class="mr-1 decoration-none" href="{% url 'buildinginfo:building_detail' pk=building_object.pk %}"><i class="fas fa-th-large"></i></a>
+      <a
+        class="mr-1 decoration-none"
+        href="{% url 'buildinginfo:building_detail_table' pk=building_object.pk %}"
+      >
+        <i class="fas fa-th-list"></i>
+      </a>
     {% endif %}
 
-    <!-- 일정관리 메뉴 -->
-    {% url 'buildinginfo:building_calendar' pk=building_obj.pk as building_calendar %}
-    {% if request.path == building_calendar %}
-      <button class="btn btn-outline-secondary btn-sm" id="hide-spark" title="hide-spark" data-toggle="button" aria-pressed="false" autocomplete="off"><i class="far fa-eye-slash"></i></button>
-      <a class="popup btn btn-outline-secondary btn-sm" href="{% url 'scheduler:event_new' %}{% if request.GET.id %}?id={{ building_obj.pk }}&name={{ request.GET.name }}{% endif %}" title="New"><i class="far fa-calendar-plus"></i></a>
-      <button class="btn btn-outline-secondary btn-sm" id="refresh" title="refresh"><i class="fas fa-redo-alt"></i></button>
-    {% endif %}
+    
 
-    <!-- 공지사항 메뉴 -->
-    {% url 'buildinginfo:building_notice' pk=building_obj.pk as building_notice %}
-    {% if request.path == building_notice %}
-      <a class="btn btn-outline-secondary btn-sm" href="{% url 'board:post_create' %}?board={{ board_name }}" title="새글"><i class="fas fa-pen"></i></a>
-      <span class="btn-group">
-        <button class="btn dropdown-toggle btn-outline-secondary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="필터"><i class="fas fa-filter"></i></button>
-        <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item" href="#">등록일순</a>
-          <a class="dropdown-item" href="#">조회순</a>
-          <a class="dropdown-item" href="#">댓글순</a>
-        </div>
-      </span>
-    {% endif %}
-
-  </div>
-
-  <div class="col-12" style="height: 10px;">
-    <hr class="my-2" style="width: 100%; color: darkgray; height: 1px;">
   </div>
 
 </div>
+
+<script>
+
+  window.onscroll = function() {
+    var el = document.getElementById("sub-menu")
+    var pos = el.getBoundingClientRect()
+    if (pos.top == 0) {
+      el.classList.add("bg-black-a")
+      el.classList.add("text-white")
+      el.classList.remove("bg-white")
+    } else if (el.classList.contains("bg-black-a") && pos.top != 0) {
+      el.classList.remove("bg-black-a")
+      el.classList.remove("text-white")
+      el.classList.add("bg-white")
+    }
+  }
+
+</script>

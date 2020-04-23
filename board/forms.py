@@ -9,12 +9,12 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Board
         # fields = '__all__'
-        fields = ('notice','building', 'title', 'memo',)
+        fields = ('notice', 'building', 'title', 'memo',)
         widgets = {
             'notice':  forms.CheckboxInput(
                 attrs={
                     'class': 'required form-check-input'
-                    }
+                }
             ),
             'building': forms.Select(
                 attrs={
@@ -84,13 +84,14 @@ class CommentForm(forms.ModelForm):
 
     class Meta:
         model = Comment
-        # fields = '__all__'
         fields = ('text',)
         widgets = {
             'text': forms.Textarea(
                 attrs={
-                    'rows':4,
-                    'class': 'form-control'
+                    'class': 'comment-area',
+                    'cols': False,
+                    'rows': False,
+                    'required': True
                 }
             ),
         }

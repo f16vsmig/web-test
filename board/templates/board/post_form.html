@@ -1,65 +1,47 @@
-{% extends 'base.html' %}
-
-{% block content %}
-
-<div class="py-2" style="display: table; width: 100%; min-height: calc(100vh  - 85px);">
-
-  <!-- 사이드바 영역 -->
-  <div class="align-top pr-2 border-right" style="display: table-cell; width: 180px;">
-    {% if board_name == 'notice' %}
-      {% include 'buildinginfo/sidebar.html' %}
-    {% else %}
-      {% include 'board/communication_sidebar.html' %}
-    {% endif %}
-  </div>
-
-  <!-- 게시글 작성 영역 -->
-  <div class="mx-auto align-top px-2 m-2" style="display: table-cell">
-    <h2 class="font-weight-lighter pl-1">공지사항</h2>
-    <div class="bg-white p-3">
-      <form method="post" action="{{ request.get_full_path }}" enctype="multipart/form-data">{% csrf_token %}
-        {% for hidden in postForm.hidden_fields %}
-          {{ hidden }}
-        {% endfor %}
-        {% if request.user.is_admin or request.user.is_superuser %}
-          <div class="form-group form-check">
-            {{ postForm.notice }}
-            <label class="form-check-label" for="id_notice">{{ postForm.notice.label }}</label>
-          </div>
+<!-- 게시글 작성 영역 -->
+<form method="post" action="{{ action }}" enctype="multipart/form-data">{% csrf_token %}
+  <div class="flex-column">
+  <!-- {% for hidden in form.hidden_fields %}
+    {{ hidden }}
+  {% endfor %} -->
+    <div class="mb-1">
+      <span>{{ form.building }}</span>
+      <span>{{ form.title }}</span>
+      {% if request.user.is_admin or request.user.is_superuser %}
+        <span>{{ form.notice }}</span>
+        <label for="id_notice">{{ form.notice.label }}</label>
         {% endif %}
-        {{ postForm.building }}<br>
-        {{ postForm.title }}<br>
-        {{ postForm.memo }}<br>
+    </div>
+  
+    <div class="mb-1">{{ form.memo }}</div>
 
-
-        {% if photo_objects %}
-          <div class="bg-white p-4 mb-3 clearfix border rounded">
-            {% for photo in photo_objects %}
-              <div class="float-left mx-2 border border-dark rounded p-1" style="height: 150px; position: relative;">
-                <img src="{{ photo.image.url }}" style="max-width: 100%; max-height: 100%;">
-                <div style="position: absolute; top: 5px; right: 7px;">
-                  <a class="text-danger" href="{% url 'board:image_delete' pk=photo.pk %}" onclick="return confirm('이미지가 완전히 삭제됩니다. 삭제할까요?')"><i class="fas fa-minus-circle"></i></a>
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-        {% endif %}
-        <div>
-          {{ formset.management_form }}
-          {% for form in formset %}
-            <div class="input-group mb-3">
-              <div class="custom-file">
-                {{ form.image }}
-                <label class="custom-file-label" for="{{ form.image.id_for_label }}">이미지 추가</label>
-              </div>
+    <!-- 업데이트시 저장된 이미지 표시 영역 -->
+    {% if images %}
+      <div class="border flex mb-1">
+        {% for image in images %}
+          <div class="mx-2 border p-1" style="height: 150px; position: relative;">
+            <img src="{{ image.image.url }}" style="max-width: 100%; max-height: 100%;">
+            <div style="position: absolute; top: 10px; right: 10px;">
+              <a class="text-danger" href="{% url 'board:image_delete' pk=image.pk %}" onclick="return confirm('이미지가 완전히 삭제됩니다. 삭제할까요?')"><i class="fas fa-minus-circle"></i></a>
             </div>
-          {% endfor %}
-        </div>
-        <input class="btn btn-dark btn-lg btn-block mt-3 {% if 'new' in request.path %}create-reload{% else %}update-reload{% endif %}" type="submit" value="저장">
-      </form>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- 이미지 추가 영역 -->
+    <div>
+      {{ formset.management_form }}
+      {% for form in formset %}
+        <p>{{ form.image }}</p>
+      {% endfor %}
+    </div>
+    <div>
+      <input class="button {% if 'new' in request.path %}create-reload{% else %}update-reload{% endif %}" type="submit" value="저장">
     </div>
   </div>
-</div>
+</form>
+
 
 <!-- 이미지 파일 선택시 파일이름 표시 -->
 <script>
@@ -76,44 +58,41 @@
 <!-- 글 작성/수정시 이전 페이지로 돌아감 -->
 <script>
 
-  $('.create-reload').on('click', function(e) {
-    e.preventDefault();
-    var boardUrl = '{% url "board:notice_main" board_name=board_name %}';
-    var form = $(e.target).closest('form');
-    var submitUrl = form.attr('action');
-    $.ajax({
-      type: 'POST',
-      url: submitUrl,
-      dataType: 'json',
-      data: form.serialize(),
-      success: function(){
-        location.replace(boardUrl); // 이전페이지 불러오기
-      },
-      fail: function() {
-        alert('오류가 발생했습니다.');
-      }
-    });
+  // $('.create-reload').on('click', function(e) {
+  //   e.preventDefault();
+  //   // var boardUrl = '{{ request.get_full_path }}';
+  //   var form = $(e.target).closest('form');
+  //   var submitUrl = form.attr('action');
+  //   $.ajax({
+  //     type: 'POST',
+  //     url: submitUrl,
+  //     dataType: 'json',
+  //     data: form.serialize(),
+  //     success: function(){
+  //       location.replace(document.referrer); // 이전페이지 불러오기
+  //     },
+  //     fail: function() {
+  //       alert('오류가 발생했습니다.');
+  //     }
+  //   });
+  // });
 
-  });
-
-  $('.update-reload').on('click', function(e) {
-    e.preventDefault();
-    var form = $(e.target).closest('form');
-    var submitUrl = form.attr('action');
-    $.ajax({
-      type: 'POST',
-      url: submitUrl,
-      dataType: 'json',
-      data: form.serialize(),
-      success: function(){
-        location.replace(document.referrer); // 이전페이지 불러오기
-      },
-      fail: function() {
-        alert('오류가 발생했습니다.');
-      }
-    });
-  });
+  // $('.update-reload').on('click', function(e) {
+  //   e.preventDefault();
+  //   var form = $(e.target).closest('form');
+  //   var submitUrl = form.attr('action');
+  //   $.ajax({
+  //     type: 'POST',
+  //     url: submitUrl,
+  //     dataType: 'json',
+  //     data: form.serialize(),
+  //     success: function(){
+  //       location.replace(document.referrer); // 이전페이지 불러오기
+  //     },
+  //     fail: function() {
+  //       alert('오류가 발생했습니다.');
+  //     }
+  //   });
+  // });
 
 </script>
-
-{% endblock %}

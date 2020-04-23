@@ -7,7 +7,7 @@ from django.urls import reverse_lazy, resolve
 from .models import Event
 from account.models import User
 from buildinginfo.models import Building, Ismart, Weather
-from .forms import EventForm
+from .forms import EventCreateForm
 
 # 스케줄러 구현
 import datetime
@@ -18,7 +18,7 @@ from .utils import Calendar, BuildingCalendar
 
 class CalendarView(ListView):
     model = Event
-    form_class = EventForm
+    form_class = EventCreateForm
     template_name = 'scheduler/calendar.html'
     extra_context = {
         'navbar': 'buildinginfo'
@@ -36,10 +36,11 @@ class CalendarView(ListView):
         if user_instance.is_superuser:
             building_objects = Building.objects.all()
         else:
-            building_objects = Building.objects.filter(author__email=user_instance)
+            building_objects = Building.objects.filter(
+                author__email=user_instance)
 
         context['calendar'] = mark_safe(html_cal)
-        context['events'] = events 
+        context['events'] = events
         context['date'] = date
         context['prev_month'] = self.prev_month(date)
         context['next_month'] = self.next_month(date)
@@ -66,10 +67,9 @@ class CalendarView(ListView):
         return month
 
 
-
 class BuildingCalendarView(ListView):
     model = Event
-    form_class = EventForm
+    form_class = EventCreateForm
     template_name = 'buildinginfo/building_schedule.html'
     extra_context = {
         'navbar': 'buildinginfo'
@@ -87,7 +87,7 @@ class BuildingCalendarView(ListView):
         building_obj = Building.objects.get(pk=self.kwargs.get('pk'))
 
         context['calendar'] = mark_safe(html_cal)
-        context['events'] = events 
+        context['events'] = events
         context['date'] = date
         context['prev_month'] = self.prev_month(date)
         context['next_month'] = self.next_month(date)
@@ -115,16 +115,17 @@ class BuildingCalendarView(ListView):
 
 
 class EventCreateView(CreateView):
-    model = Event
-    form_class = EventForm
-    template_name = 'scheduler/event.html'
+    # model = Event
+    form_class = EventCreateForm
+    template_name = 'scheduler/event_form.html'
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         if kwargs['instance'] is None:
             kwargs['instance'] = Event()
         if self.request.GET.get('date'):
-            date = datetime.datetime.strptime(self.request.GET.get('date'), '%Y-%m-%d')
+            date = datetime.datetime.strptime(
+                self.request.GET.get('date'), '%Y-%m-%d')
             kwargs['instance'].start_time = date
             kwargs['instance'].end_time = date + datetime.timedelta(days=1)
         if self.request.GET.get('id'):
@@ -138,8 +139,8 @@ class EventCreateView(CreateView):
 
 class EventUpdateView(UpdateView):
     model = Event
-    form_class = EventForm
-    template_name = 'scheduler/event.html'
+    form_class = EventCreateForm
+    template_name = 'scheduler/event_form.html'
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -166,5 +167,3 @@ def EventDeleteView(request, pk):
     else:
         Http404
     return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
-
-

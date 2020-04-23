@@ -1,6 +1,7 @@
+from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay, ExtractHour, ExtractMinute, ExtractSecond
 from django.shortcuts import render
 
-from django.http import HttpResponse  
+from django.http import HttpResponse
 from django.views.generic import ListView
 from buildinginfo.models import Building, Ismart, Weather
 from account.models import User
@@ -35,11 +36,13 @@ def ChartView(request):
     # return render(request, 'chart/chart.html', context)
     return render(request, 'chart/google_chart.html', context)
 
+
 def ChartData(request):
     start_day = request.GET.get('start-day')
     end_day = request.GET.get('end-day')
     dt_start_day = datetime.datetime.strptime(start_day, '%Y-%m-%d')
-    dt_end_day = datetime.datetime.strptime(end_day, '%Y-%m-%d')+datetime.timedelta(days=1)
+    dt_end_day = datetime.datetime.strptime(
+        end_day, '%Y-%m-%d')+datetime.timedelta(days=1)
     datapoint = request.GET.get('datapoint')
     pk, building, model, endpoint = datapoint.split('-')
     select = {
@@ -47,10 +50,12 @@ def ChartData(request):
     }
 
     if model == 'Ismart':
-        queryset = Ismart.objects.extra(select).filter(building__pk=pk, datetime__range=(dt_start_day, dt_end_day))
+        queryset = Ismart.objects.extra(select).filter(
+            building__pk=pk, datetime__range=(dt_start_day, dt_end_day)).order_by('datetime')
     elif model == 'Weather':
         station_id = Building.objects.get(pk=pk).weather_station.station_id
-        queryset = Weather.objects.extra(select).filter(weather_station__station_id=station_id, datetime__range=(dt_start_day, dt_end_day))
+        queryset = Weather.objects.extra(select).filter(
+            weather_station__station_id=station_id, datetime__range=(dt_start_day, dt_end_day)).order_by('datetime')
 
     data = list(queryset.values_list('milliseconds', endpoint))
 
@@ -60,6 +65,7 @@ def ChartData(request):
     }
     data = json.dumps(result, ensure_ascii=False)
     return HttpResponse(data, content_type="application/json; charset=utf-8")
+
 
 '''
 def GoogleChartData(request):
@@ -89,23 +95,26 @@ def GoogleChartData(request):
     return HttpResponse(data_table.ToJSon(), content_type="application/json; charset=utf-8")
 '''
 
-from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay, ExtractHour, ExtractMinute, ExtractSecond
 
 def GoogleChartData(request):
     start_day = request.GET.get('start-day')
     end_day = request.GET.get('end-day')
     dt_start_day = datetime.datetime.strptime(start_day, '%Y-%m-%d')
-    dt_end_day = datetime.datetime.strptime(end_day, '%Y-%m-%d')+datetime.timedelta(days=1)
+    dt_end_day = datetime.datetime.strptime(
+        end_day, '%Y-%m-%d')+datetime.timedelta(days=1)
     datapoint = request.GET.get('datapoint')
     building_pk, building, model, endpoint = datapoint.split('-')
-    
+
     # model에 따라 데이터 조회
     if model == 'Ismart':
-        queryset = Ismart.objects.filter(building__pk=building_pk, datetime__range=(dt_start_day, dt_end_day))
+        queryset = Ismart.objects.filter(
+            building__pk=building_pk, datetime__range=(dt_start_day, dt_end_day)).order_by('datetime')
     elif model == 'Weather':
-        station_id = Building.objects.get(pk=building_pk).weather_station.station_id
-        queryset = Weather.objects.filter(weather_station__station_id=station_id, datetime__range=(dt_start_day, dt_end_day))
-    
+        station_id = Building.objects.get(
+            pk=building_pk).weather_station.station_id
+        queryset = Weather.objects.filter(
+            weather_station__station_id=station_id, datetime__range=(dt_start_day, dt_end_day)).order_by('datetime')
+
     queryset = queryset.annotate(
         timestamp=Concat(
             Value('Date('),

@@ -1,50 +1,54 @@
-<div class="border-bottom px-2 clearfix">
-  <h1 class="float-left font-weight-lighter">
-    {% if post_detail.notice == True %}[공지]{% endif %}&nbsp;{{ post_detail.title }}
+<!-- 제목, 새글, 필터 영역 -->
+<div class="flex">
+  <h1 class="font-weight-lighter mr-1">
+    {% if post_detail.notice == True %}
+      &nbsp;[공지]
+    {% endif %}
+    &nbsp;{{ post_detail.title }}
   </h1>
   {% if request.user == post_detail.author %}
-    <form method="POST" action="{% url 'board:post_delete' pk=request.GET.id %}">{% csrf_token %}
-      <input type="submit" class="btn btn-danger btn-sm ml-1 my-auto float-right post-delete" value="삭제">
-    </form>
-    <a class="btn btn-secondary btn-sm float-right" href="{% url 'board:post_update' pk=post_detail.pk %}?board={{ board_name }}&page={{ request.GET.page }}">수정</a>
+  <div class="flex-xy-center">
+    <div>
+      <form method="POST" action="{% url 'board:post_delete' pk=request.GET.id %}">
+        {% csrf_token %}
+        <input class="button" type="submit" onclick="postDelete()" value="삭제" />
+      </form>
+    </div>
+    <div>
+      <a
+        class="button"
+        href="{{ update_url }}?building={{ building_object.pk }}&page={{ request.GET.page }}&id={{ request.GET.id }}"
+        >수정</a>
+    </div>
+  </div>
   {% endif %}
 </div>
 
-<div class="bg-light p-2">
-  <span>{{ post_detail.author }} 님</span>
-  <span class="float-right">조회수: {{ post_detail.hits }}</span>
-</div>
-<div class="pl-2">
-  <span class="font-weight-lighter" style="font-size: 13px;"><i class="far fa-clock"></i>&nbsp;{{ post_detail.registration|date:'Y-m-d H:i' }}</span>
-</div>
-<div class="px-2 py-3">
-  <p>{{ post_detail.memo|linebreaks }}</p>
-  {% for photo in photos %}
-    <p><img src="{{ photo.image.url }}" class="mx-auto d-block p-3" style="max-height: 100%; max-width: 100%;" alt=""></p>
-  {% endfor %}
+<!-- 작성자, 작성일, 조회수 영역 -->
+<div class="flex-x-between">
+  <div class="m-1 flex-y-center">
+    <i class="fas fa-user"></i>&nbsp;
+    {{ post_detail.author }}님
+  </div>
+  <div class="m-1">
+    <div class="m-1">
+      <i class="far fa-clock"></i>&nbsp;{{ post_detail.registration|date:"Y-m-d H:i" }}
+    </div>
+    <div class="m-1" style="text-align: right;">
+      조회수: {{ post_detail.hits }}
+    </div>
+  </div>
 </div>
 
-<script>
 
-  $('.post-delete').on('click', function(e) {
-    e.preventDefault();
-    var con = confirm('이 글을 삭제하겠습니까?');
-    if (con == true) {
-      var form = $(e.target).closest('form');
-      var submitUrl = form.attr('action');
-      $.ajax({
-        type: 'POST',
-        url: submitUrl,
-        dataType: 'json',
-        data: form.serialize(),
-        success: function(){
-          location.replace(document.referrer); // 이전페이지 불러오기
-        },
-        fail: function() {
-          alert('오류가 발생했습니다.');
-        }
-      });
-    };
-  });
+<div class="p-2">
+  <p>{{ post_detail.memo | linebreaks }}</p>
 
-</script>
+  {% if images %}
+    {% for image in images %}
+      <p>
+        <img src="{{ image.image.url }}" class="mx-auto d-block p-3" style="max-height: 100%; max-width: 100%;" alt="" />
+      </p>
+    {% endfor %}
+  {% endif %}
+</div>

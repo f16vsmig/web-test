@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load static %}
+
+<div class="item-flex-1-1-auto flex">
+
+  <!-- 기본정보 영역 -->
+  {% include 'buildinginfo/basic_information.html' %}
+
+  <!-- 상세정보 영역 -->
+  <div class="item-flex-1-1-auto flex-column">
+    <!-- 메뉴탭 영역 -->
+    {% include 'buildinginfo/building_detail_menu.html' %}
+
+    <!-- 대시보드 영역 -->
+    <div class="item-flex-1-1-auto flex-column bg-white pt-3 mt-2">
+      <div class="flex mb-1">
+        <div class="item-flex-1-1-0 flex-column flex-xy-center m-2 pt-2" style="border-bottom: 5px solid rgb(233, 54, 54)">
+          <div style="font-size: 50px;">
+            <a class="decoration-none {% if request.GET.status == 'ISS' %}active{% endif %}" href="{% url 'tasks:tasks' pk=building_object.pk %}?status=ISS">{{ request_cnt }}</a>
+          </div>
+          <h3>요청</h3>
+        </div>
+        <div class="item-flex-1-1-0 flex-column flex-xy-center m-2 pt-2" style="border-bottom: 5px solid rgb(40, 207, 90)">
+          <div style="font-size: 50px;">
+            <a class="decoration-none {% if request.GET.status == 'PRO' %}active{% endif %}" href="{% url 'tasks:tasks' pk=building_object.pk %}?status=PRO">{{ ing_cnt }}</a>
+          </div>
+          <h3>접수</h3>
+        </div>
+        <div class="item-flex-1-1-0 flex-column flex-xy-center m-2 pt-2" style="border-bottom: 5px solid rgb(52, 132, 236)">
+          <div style="font-size: 50px;">
+            <a class="decoration-none {% if request.GET.status == 'COM' %}active{% endif %}" href="{% url 'tasks:tasks' pk=building_object.pk %}?status=COM">{{ complete_cnt }}</a>
+          </div>
+          <h3>완료</h3>
+        </div>
+        <div class="item-flex-1-1-0 flex-column flex-xy-center m-2 pt-2" style="border-bottom: 5px solid rgb(228, 66, 166)">
+          <div style="font-size: 50px;">
+            <a class="decoration-none {% if request.GET.status == 'DRO' %}active{% endif %}" href="{% url 'tasks:tasks' pk=building_object.pk %}?status=DRO">{{ drop_cnt }}</a>
+          </div>
+          <h3>드랍</h3>
+        </div>
+      </div>
+
+      <!-- 세부 항목 -->
+      <div class="flex-wrap mx-2">
+        {% if request.GET.status == 'ISS' %}
+          <div class="flex-xy-center m-2 p-2 hover-active" style="width: 250px; border: 1px solid rgb(143, 141, 142); border-radius: 5px;">
+            <a class="decoration-none flex-xy-center" href="{% url 'tasks:task_create' %}?building={{ building_object.pk }}" onclick="popupForm()" style="height: 100%; width: 100%; font-size: 25px;">
+              +새로 만들기
+            </a>
+          </div>
+        {% endif %}
+        {% if tasks %}
+          {% for task in tasks %}
+            <div class="flex-column m-2 p-2 hover-active" style="width: 250px; border: 1px solid rgb(143, 141, 142); border-radius: 5px; background: rgb(218, 248, 246)">
+              <div class="text-right">
+                {{ task.updated_at }}
+              </div>
+              <h1 class="color-dark">
+                {{ task.title }}
+              </h1>
+              <h3 class="mb-0 text-gray">
+                {{ task.task }}
+              </h3>
+              <h4 class="color-gray">
+                {{ task.facility }}
+              </h4>
+              
+              <div class="flex-x-between item-y-bottom">
+                {% if task.status != 'COM' and task.status != 'DRO' %}
+                  <form method="POST" action="{% url 'tasks:task_drop' pk=task.pk %}">
+                    {% csrf_token %}
+                    <button class="button" type="submit" onclick="return confirm('드랍할까요?')">Drop</button>
+                  </form>
+                  <form method="POST" action="{% url 'tasks:task_next' pk=task.pk %}">
+                    {% csrf_token %}
+                    <button class="button" type="submit" onclick="return confirm('다음 단계로?')">Next</button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <i class="fas fa-tools fa-5x item-xy-center"> No Data</i>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

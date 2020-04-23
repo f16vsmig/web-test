@@ -1,18 +1,12 @@
 {% load board_extras %}
 
 <!-- 댓글 쓰기 영역 -->
-<div class="my-2">
-  <form method="POST" action="{% url 'board:comment_create' %}?id={{ request.GET.id }}">{% csrf_token %}
-    <div class="input-group">
-      {% for field in comment_form %}
-        {{ field }}
-      {% endfor %}
-      <div class="input-group-append" style="width: 120px;">
-        <input class="btn btn-dark btn-lg btn-block add-comment" type="submit" value="댓글쓰기">
-      </div>
-    </div>
-  </form>
-</div>
+<form class="flex m-2" method="POST" action="{% url 'board:comment_create' %}?id={{ request.GET.id }}">{% csrf_token %}
+  {% for field in comment_form %}
+    {{ field }}
+  {% endfor %}
+  <input class="comment-button" type="submit" onclick="postComment()" value="댓글쓰기">
+</form>
 
 <!-- 댓글 리스트 영역 -->
 <div class="border-bottom mt-3 pl-1">
@@ -21,68 +15,73 @@
   </span>
 </div>
 {% if comments %}
-  <div class="mb-4">
-    {% for comment in comments %}
-      <div class="py-2 border-bottom {% if comment.author == request.user %}my-comment{% elif comment.author == detail.author %}author{% else %}bg-light{% endif %}">
-        <div class="px-2">
-          <span class="mr-3">{{ comment.author }} 님</span>
-          <span class="font-weight-lighter" style="font-size: 12px;">등록시간 : {{ comment.registration|date:'Y-m-d H:i' }}</span>
-          {% if comment.text != '' %}
-            <span class="pl-2">
-              <span class="mr-2"><a class="add-subcomment" href="#" comment-id="{{ comment.pk }}" style="color: black; text-decoration: none;">&rdsh;대댓글</a></span>
-              {% if comment.author == request.user %}
-                <span class="mr-2" style="display: inline-block;">
-                  <form method="POST" action="{% url 'board:comment_delete' pk=comment.pk %}">{% csrf_token %}
-                    <button class="del-comment as-text" type="submit"><i class="fas fa-trash-alt"></i>&nbsp;삭제</button>
-                  </form>
+{% for comment in comments %}
+  <div class="border-bottom">
+    <div
+      class="py-2 {% if comment.author == request.user %}my-comment{% elif comment.author == detail.author %}author{% else %}bg-light{% endif %}"
+      id="{{ comment.pk }}"
+      >
+      <div class="px-2">
+        <span class="mr-3">{{ comment.author }} 님</span>
+        <span class="font-weight-lighter" style="font-size: 12px;">등록시간 : {{ comment.registration|date:'Y-m-d H:i' }}</span>
+        {% if comment.text != '' %}
+          <span class="pl-2">
+            <span class="">
+              <button class="button" onclick="createSubCommentForm()" comment-id="{{ comment.pk }}">&rdsh;대댓글</button>
+            </span>
+            {% if comment.author == request.user %}
+              <span class="mr-2" style="display: inline-block;">
+                <form method="POST" action="{% url 'board:comment_delete' pk=comment.pk %}">{% csrf_token %}
+                  <button class="button" type="submit" onclick="deleteComment()"><i class="fas fa-trash-alt"></i>&nbsp;삭제</button>
+                </form>
+              </span>
+            {% endif %}
+          </span>
+        {% endif %}
+      </div>
+      <div class="p-2" id="comment-id-{{ comment.pk }}">
+        {% if comment.text == '' %}
+          <p>(댓글이 삭제되었습니다.)</p>
+        {% else %}
+          {{ comment.text|linebreaks }}
+        {% endif %}
+      </div>
+    </div>
+    {% for subcomment in subcomments %}
+      {% if subcomment.comment == comment %}
+        <div class="flex p-2 {% if subcomment.author == request.user %}my-comment{% elif subcomment.author == detail.author %}author{% else %}bg-light{% endif %}">
+          <div class="pl-3">
+            &rdsh;
+          </div>
+          <div class="item-flex-1-1-auto pl-2">
+            <div class="px-2">
+              <span class="mr-3">{{ subcomment.author }} 님</span>
+              <span class="font-weight-lighter" style="font-size: 12px;">등록시간 : {{ subcomment.registration|date:'Y-m-d H:i' }}</span>
+              {% if subcomment.text != '' %}
+                <span class="pl-2">
+                  {% if subcomment.author == request.user %}
+                    <span class="mr-2" style="display: inline-block;">
+                      <form method="POST" action="{% url 'board:subcomment_delete' pk=subcomment.pk pk=subcomment.pk %}">{% csrf_token %}
+                        <button class="button" type="submit"  onclick="deleteComment()"><i class="fas fa-trash-alt fa-md"></i>&nbsp;삭제</button>
+                      </form>
+                    </span>
+                  {% endif %}
                 </span>
               {% endif %}
-            </span>
-          {% endif %}
-        </div>
-        <div class="p-2" id="comment-id-{{ comment.pk }}">
-          {% if comment.text == '' %}
-            <p>(댓글이 삭제되었습니다.)</p>
-          {% else %}
-            {{ comment.text|linebreaks }}
-          {% endif %}
-        </div>
-      </div>
-      {% for subcomment in subcomments %}
-        {% if subcomment.comment == comment %}
-          <div class="py-2 clearfix border-bottom {% if subcomment.author == request.user %}my-comment{% elif subcomment.author == detail.author %}author{% else %}bg-light{% endif %}">
-            <div class="float-left pl-3" style="width: 20px;">
-              &rdsh;
             </div>
-            <div class="float-left pl-2" style="width: calc(100% - 20px);">
-              <div class="px-2">
-                <span class="mr-3">{{ subcomment.author }} 님</span>
-                <span class="font-weight-lighter" style="font-size: 12px;">등록시간 : {{ subcomment.registration|date:'Y-m-d H:i' }}</span>
-                {% if subcomment.text != '' %}
-                  <span class="pl-2">
-                    {% if subcomment.author == request.user %}
-                      <span class="mr-2" style="display: inline-block;">
-                        <form method="POST" action="{% url 'board:subcomment_delete' pk=subcomment.pk pk=subcomment.pk %}">{% csrf_token %}
-                          <button class="del-comment as-text" type="submit"><i class="fas fa-trash-alt"></i>&nbsp;삭제</button>
-                        </form>
-                      </span>
-                    {% endif %}
-                  </span>
-                {% endif %}
-              </div>
-              <div class="p-2">
-                {% if subcomment.text == '' %}
-                  <p>(댓글이 삭제되었습니다.)</p>
-                {% else %}
-                  {{ subcomment.text|linebreaks }}
-                {% endif %}
-              </div>
+            <div class="p-2">
+              {% if subcomment.text == None %}
+                <p>(댓글이 삭제되었습니다.)</p>
+              {% else %}
+                {{ subcomment.text|linebreaks }}
+              {% endif %}
             </div>
           </div>
-        {% endif %}
-      {%endfor %}
+        </div>
+      {% endif %}
     {% endfor %}
   </div>
+{% endfor %}
 {% endif %}
 
 <style>
@@ -110,76 +109,6 @@ button.as-text:active {
 
 <script>
 
-  $('.add-subcomment').click(function () {
-    event.preventDefault();
-    var token = '{{ csrf_token }}';
-    console.log(token);
-    var commentId = $(this).attr('comment-id');
-    var actionUrl = '{% url "board:subcomment_create" %}';
-    var targetId = 'comment-id-' + commentId;
-    var replyId = 'comment-id-' + commentId + '-reply';
-    var submitId = targetId + '-submit';
-    if ($('#' + replyId).length > 0) {
-      alert('대댓글을 입력하세요');
-    } else {
-      $('<div class="my-2 clearfix" id="' + replyId + '" style="padding-left: 10px;"><div class="pl-2 float-left" style="width: 25px;">&rdsh;</div><div class="float-left" style="width: calc(100% - 30px);"><form method="POST" action="' + actionUrl + '?id=' + commentId + '"><input type="hidden" name="csrfmiddlewaretoken" value="' + token + '"><div class="input-group"><textarea class="form-control" cols="40" rows="4" id="id_subcomment-text" name="subcomment-text" required></textarea><div class="input-group-append" style="width: 120px;"><input class="btn btn-dark btn-lg btn-block add-comment" id="' + submitId +'" type="submit" value="대댓글쓰기"></div></div></form></div></div>').insertAfter('#' + targetId);
-      $('#' + submitId).on('click', function(e) {
-        e.preventDefault();
-        var form = $(e.target).closest('form');
-        var submitUrl = form.attr('action');
-        $.ajax({
-          type: 'POST',
-          url: submitUrl,
-          dataType: 'json',
-          data: form.serialize(),
-          success: function(){
-            location.reload();
-          },
-          fail: function() {
-            alert('오류가 발생했습니다.');
-          }
-        });
-      });
-    };
-  });
-
-  $('.add-comment').on('click', function(e) {
-    e.preventDefault();
-    var form = $(e.target).closest('form');
-    var submitUrl = form.attr('action');
-    $.ajax({
-      type: 'POST',
-      url: submitUrl,
-      dataType: 'json',
-      data: form.serialize(),
-      success: function(){
-        location.reload();
-      },
-      fail: function() {
-        alert('오류가 발생했습니다.');
-      }
-    });
-  });
-
-  $('.del-comment').on('click', function(e) {
-    e.preventDefault();
-    var con = confirm('이 댓글을 삭제하겠습니까?');
-    if (con == true) {
-      var form = $(e.target).closest('form');
-      var submitUrl = form.attr('action');
-      $.ajax({
-        type: 'POST',
-        url: submitUrl,
-        dataType: 'json',
-        data: form.serialize(),
-        success: function(){
-          location.reload();
-        },
-        fail: function() {
-          alert('오류가 발생했습니다.');
-        }
-      });
-    };
-  });
+  var token = "{{ csrf_token }}";
 
 </script>

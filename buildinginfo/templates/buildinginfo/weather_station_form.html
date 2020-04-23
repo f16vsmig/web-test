@@ -1,0 +1,7 @@
+<form method="POST" action="{% url 'buildinginfo:weather_station_create' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="flex mt-1">
+    <button class="item-flex-1-1-auto button bg-red" type="submit" onclick="return confirm('추가하시겠습니까?')">추가</button>
+  </div>
+</form>

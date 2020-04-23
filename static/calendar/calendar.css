@@ -1,0 +1,15 @@
+#calendar {
+  width: 100%;
+  height: 500px;
+  border: solid darkgray 1px;
+}
+
+#calendar td {
+  text-align: center;
+}
+
+#calendar td.day:hover {
+  color: white;
+  background: gray;
+  cursor: pointer;
+}

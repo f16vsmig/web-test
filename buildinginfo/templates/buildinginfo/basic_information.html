@@ -1,18 +1,40 @@
-<div class="bg-white sticky-top">
-  <div class="" style="height: 40%;">
-    {% if building_obj.photo %}
-      <img src="{{ building_obj.photo.url }}" class="mx-auto d-block p-3" style="max-height: 100%; max-width: 100%;" alt="빌딩 사진">
-    {% else %}
-      <p class="text-center">No Photo</p>
-    {% endif %}
-  </div>
-  <div class="p-1">
-    <h3 class="text-muted text-center font-weight-light text-truncate">{{ building_obj.name }}</h3>
-    <ul class="list-group list-group-flush font-weight-light" style="font-size: 15px;">
-      <li class="list-group-item text-truncate">준공일 : {{ building_obj.construction_date|date:'Y-m-d' }}</li>
-      <li class="list-group-item text-truncate">건물주 : {{ building_obj.owner }}</li>
-      <li class="list-group-item text-truncate">관리사 : {{ building_obj.fm }}</li>
-    </ul>
+{% load humanize %}
+
+{% load buildinginfo_extras %}
+
+<div class="px-2 item-flex-0-0-auto" style="width: 15em;">
+  <div class="bg-white-a sticky-top">
+    <div class="flex-xy-center" style="height: 200px;">
+      {% if building_object.photo %}
+        <img src="{{ building_object.photo.url }}" style="max-height: 85%; max-width: 85%;" alt="빌딩 사진">
+      {% else %}
+        <p class="text-center">No Photo</p>
+      {% endif %}
+    </div>
+    <div class="p-1">
+      <div class="flex-xy-center">
+        <h2 class="text-muted text-center font-weight-light text-truncate mr-1">{{ building_object.name }}</h2>
+        <a class="decoration-none mr-1" type="button" href="{% url 'buildinginfo:building_update' pk=building_object.pk %}" title="편집"><i class="fas fa-edit"></i></a>
+      </div>
+      <div class="flex-x-center">
+        <table class="text-center w-100">
+          <tbody>
+            <tr>
+              <th>준공일 :</th>
+              <td>{{ building_object.construction_date|date:"Y-m-d" }}</td>
+            </tr>
+            <tr>
+              <th>건물주 :</th>
+              <td>{{ building_object.owner }}</td>
+            </tr>
+            <tr>
+              <th>관리사 :</th>
+              <td>{{ building_object.fm }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 

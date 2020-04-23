@@ -1,0 +1,89 @@
+.building-card {
+  position: relative;
+  padding: 3px;
+  width: 15em;
+  height: 20em;
+  border: 1px solid darkgray;
+  background: white;
+}
+
+.building-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 30px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  visibility: hidden;
+}
+
+.building-card:hover .building-name {
+  visibility: visible;
+}
+
+.zoom-0:hover div.icon {
+  transition: transform 0.2s;
+  transform: scale(1.008, 1.02);
+}
+
+.zoom-1:hover div.icon {
+  transition: transform 0.2s;
+  transform: scale(1.015, 1.02);
+}
+
+.zoom-2:hover div.icon {
+  transition: transform 0.2s;
+  transform: scale(1.1, 1.1);
+}
+
+.icon-stack {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* height: 65px; */
+  /* line-height: 4em; */
+  /* margin: 4em auto; */
+  vertical-align: middle;
+}
+
+.icon-stack-1x,
+.icon-stack-2x,
+.icon-stack-3x,
+.icon-stack-4x,
+.icon-stack-5x {
+  position: absolute;
+  display: block;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.icon-stack-1x {
+  line-height: inherit;
+}
+
+.icon-stack-2x {
+  font-size: 2em;
+}
+
+.icon-stack-3x {
+  font-size: 3em;
+}
+
+.icon-stack-4x {
+  font-size: 4em;
+}
+
+.icon-stack-5x {
+  font-size: 5em;
+}
+
+.navbar .active {
+  color: lightcoral !important;
+}
+
+.building-info-menu .active {
+  color: lightcoral;
+  font-weight: bold;
+}

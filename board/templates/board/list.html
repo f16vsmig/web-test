@@ -16,8 +16,8 @@
     {% for object in notice %}
       <tr class="text-center bg-light">
         <td class="text-left {% if object.pk|slugify == request.GET.id %}font-weight-bold{% endif %}">
-          {% if page %}
-            <a href="?page={{ page }}&id={{ object.pk }}">
+          {% if request.GET.page %}
+            <a href="?page={{ request.GET.page }}&id={{ object.pk }}">
           {% else %}
             <a href="?page=1&id={{ object.pk }}">
           {% endif %}
@@ -27,7 +27,6 @@
             <span class="font-weight-lighter">
               {% if photo_list|count:object.pk > 0 %}
                 <i class="far fa-image" title="이미지가 첨부됨"></i>
-                {{ photo_list|count:object.pk }}
               {% endif %}
 
               {%if comment_list|count:object.pk > 0 %}
@@ -54,8 +53,8 @@
     {% for object in object_list %}
       <tr class="text-center">
         <td class="text-left {% if object.pk|slugify == request.GET.id %}font-weight-bold{% endif %}">
-          {% if page %}
-            <a href="?page={{ page }}&id={{ object.pk }}">
+          {% if request.GET.page %}
+            <a href="?page={{ request.GET.page }}&id={{ object.pk }}">
           {% else %}
             <a href="?page=1&id={{ object.pk }}">
           {% endif %}
@@ -65,7 +64,6 @@
             <span class="font-weight-lighter">
               {% if photo_list|count:object.pk > 0 %}
                 <i class="far fa-image" title="이미지가 첨부됨"></i>
-                {{ photo_list|count:object.pk }}
               {% endif %}
 
               {%if comment_list|count:object.pk > 0 %}

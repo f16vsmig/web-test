@@ -1,0 +1,8 @@
+<form class="my-2" method="POST" action="{% url 'tasks:task_create' %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <div class="flex mt-1">
+    <button class="item-flex-1-1-auto button bg-red" type="submit" onclick="postForm()">등록</button>
+  </div>
+</form>
+

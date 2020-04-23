@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+
+{% block content %}
+
+<div class="item-flex-1-1-auto flex">
+
+  <!-- 기본정보 영역 -->
+  {% include 'buildinginfo/basic_information.html' %}
+
+  <!-- 상세정보 영역 -->
+  <div class="item-flex-1-1-auto flex-column">
+    <!-- 메뉴탭 영역 -->
+    {% include 'buildinginfo/building_detail_menu.html' %}
+    
+    <!-- 게시판 영역 -->
+    <div class="bg-white mt-2 px-2">
+      {% include "board/board_frame.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}

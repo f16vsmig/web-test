@@ -1,0 +1,53 @@
+#data-points-tree ul,
+li {
+  list-style: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#data-points-tree li {
+  margin-bottom: 3px;
+  padding-left: 8px;
+}
+
+#data-points-tree ul {
+  margin-left: 8px;
+  padding-left: 0;
+}
+
+#data-points-tree > ul {
+  margin-top: 5px;
+  margin-left: 3px;
+}
+
+#data-points-tree > ul > li {
+  padding-left: 0px;
+}
+
+#data-points-tree li > ul {
+  border-left: solid darkgray 1px;
+}
+
+#data-points-tree input,
+label {
+  cursor: pointer;
+}
+
+#data-points-tree .hide {
+  visibility: hidden;
+  max-height: 0;
+}
+
+#data-points-tree .show {
+  visibility: visible;
+  max-height: 999px;
+}
+
+#data-points-tree i {
+  cursor: pointer;
+}
+
+.bg-white {
+  background: white;
+}

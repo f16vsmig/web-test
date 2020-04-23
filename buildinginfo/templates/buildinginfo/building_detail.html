@@ -4,409 +4,547 @@
 
 {% block content %}
 
-<div class="row" style="min-height: calc(100vh - 56px - 25px);">
+{% load static %}
+
+{% load buildinginfo_extras %}
+
+<div class="item-flex-1-1-auto flex">
 
   <!-- 기본정보 영역 -->
-  <div class="col-2 pr-0 pb-2">
-    {% include 'buildinginfo/basic_information.html' %}
-  </div>
+  {% include 'buildinginfo/basic_information.html' %}
 
   <!-- 상세정보 영역 -->
-  <div class="col-10 pb-2">
+  <div class="item-flex-1-1-auto flex-column">
     <!-- 메뉴탭 영역 -->
     {% include 'buildinginfo/building_detail_menu.html' %}
     
     <!-- 대시보드 영역 -->
-    <div class="row">
-      <div class="col-12 pt-2">
-        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#work-progress" aria-expanded="true" aria-controls="work-progress">
-          작업상황
-        </button>
+    <h3 class="p-1 mt-2 mb-1 mr-1 border-bottom text-gray">작업상황</h3>
+
+    <div class="flex">
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-blue text-center text-white zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-tools fa-5x"></i>
+        </div>
+        <h4>요청</h4>
+        <h3 class="pb-2">15</h3>
+        <h5 class="font-weight-light">2019년 전체 의뢰수</h5>
+      </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 text-center text-white bg-blue zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-tasks fa-5x"></i>
+        </div>
+        <h4>진행중</h4>
+        <h3 class="pb-2">5</h3>
+        <h5 class="font-weight-light">aaaa</h5>
+      </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-blue text-center text-white zoom-2">
+        <div class="my-5 icon">
+          <i class="far fa-check-circle fa-5x"></i>
+        </div>
+        <h4>완료</h4>
+        <h3 class="pb-2">10</h3>
+        <h5 class="font-weight-light">50% 완료</h5>
       </div>
     </div>
 
-    <div class="row collapse show" id="work-progress">
-      <div class="col-12 py-2">
-        <div class="position-relative" style="height: 10px;">
-          <span class="bg-danger h-100 hover-opacity-half" data-toggle="tooltip" data-placement="bottom" title="진행률 50%" style="min-width: 50%; min-height: 10px; position: absolute; top: 0;"></span>
+
+    <h3 class="p-1 mt-5 mb-1 mr-1 border-bottom text-gray">기본정보</h3>
+    {% start -1 1 1 as start %}
+    <div class="flex" id="basic-information">
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center text-gray zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-map-marker-alt fa-5x"></i>
         </div>
+        <h4>위치</h4>
+        <h3 class="pb-2">{{ building_object.weather_station.city }}</h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualColumnChart('city', 'kwh')">
+            비교하기(도시)
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualScatterChart('city', 'kwh', 'name')">
+            비교하기(빌딩)
+            <i class="fas fa-chart-line"></i>
+          </a>
+        </h5>
       </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-tools fa-5x my-2"></i>
-            <h4>전체 요청</h4>
-            <h3 class="border-bottom pb-2">15</h3>
-            <h6 class="font-weight-light">2019년 전체 의뢰수</h6>
-          </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center text-gray zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-building fa-5x"></i>
         </div>
+        <h4>용도</h4>
+        <h3 class="pb-2">오피스</h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualColumnChart('use', 'kwh')">
+            비교하기(용도)
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualScatterChart('use', 'kwh', 'name')">
+            비교하기(빌딩)
+            <i class="fas fa-chart-line"></i>
+          </a>
+        </h5>
       </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-tasks fa-5x my-2"></i>
-            <h4>진행중</h4>
-            <h3 class="border-bottom pb-2">5</h3>
-            <h6 class="font-weight-light">aaaa</h6>
-          </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center text-gray zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-expand fa-5x"></i>
         </div>
+        <h4>면적</h4>
+        <h3 class="pb-2">{{ building_object.total_area|floatformat:0|intcomma }}m2</h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'total_area', 'desc')">
+            비교하기(면적)
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualScatterChart('total_area', 'kwh', 'name')">
+            비교하기(면적+에너지)
+            <i class="fas fa-chart-line"></i>
+          </a>
+        </h5>
       </div>
-      <div class="col mb-2">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="far fa-check-circle fa-5x my-2"></i>
-            <h4>완료</h4>
-            <h3 class="border-bottom pb-2">10</h3>
-            <h6 class="font-weight-light">50% 완료</h6>
-          </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center text-gray zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-cogs fa-5x"></i>
         </div>
+        <h4>관리사</h4>
+        <h3 class="pb-2">{{ building_object.fm }}</h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualColumnChart('fm', 'total_density')">
+            비교하기(FM)
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualScatterChart('fm', 'total_density', 'name')">
+            비교하기(빌딩)
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
+      </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center text-gray zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-cube fa-5x"></i>
+        </div>
+        <h4>외장종류</h4>
+        <h3 class="pb-2">{{ building_object.get_wall_display }}</h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualColumnChart('wall', 'total_density')">
+            비교하기(외장)
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawAnnualScatterChart('wall', 'total_density', 'name')">
+            비교하기(빌딩)
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
+      </div>
+    </div>
+    
+
+    <h3 class="p-1 mt-5 mb-1 mr-1 border-bottom text-gray">에너지 통계</h3>
+
+    <div class="flex">
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-chart-bar fa-5x"></i><br>
+          <strong>Working-day</strong>
+        </div>
+        <h4>평일 사용량</a>
+        </h4>
+        <h3 class="pb-2">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'workingday')">
+            {{ stat.workingday|intcomma }}
+            ( {% ratio stat.workingday stat.kwh %} % )
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'workingday')">
+            비교하기
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
+      </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-chart-bar fa-5x"></i><br>
+          <strong>Holiday</strong>
+        </div>
+        <h4>휴일 사용량</h4>
+        <h3 class="pb-2">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'holiday')">
+            {{ stat.holiday|intcomma }}
+            ( {% ratio stat.holiday stat.kwh %} % )
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'holiday')">
+            비교하기
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
       </div>
     </div>
 
-    <div class="row">
-      <div class="col py-2">
-        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#basic-information" aria-expanded="true" aria-controls="basic-information">
-          기본정보
-        </button>
+    <div class="flex mt-2">
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-bolt fa-5x"></i>
+        </div>
+        <h4>전체 사용량</h4>
+        <h3 class="pb-2">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'workingday, holiday')">
+            {{ stat.kwh|intcomma }}
+            ( 100 % )
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'kwh')">
+            비교하기
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
       </div>
     </div>
-    <div class="row collapse show" id="basic-information">
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-map-marker-alt fa-5x my-2"></i>
-            <h4>위치</h4>
-            <h3 class="border-bottom pb-2">서울</h3>
-            <h6 class="font-weight-light">기상관측소: 102</h6>
-          </div>
+
+    <div class="flex mt-2">
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-minus fa-5x"></i><br>
+          <strong>Baseload</strong>
         </div>
+        <h4>기본 사용량</h4>
+        <h3 class="pb-2">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'baseload')">
+            {{ stat.baseload|floatformat|intcomma }}
+            ( {% ratio stat.baseload stat.kwh %} %)
+            <i class="fas fa-chart-line"></i>
+          </a>
+        </h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'baseload')">
+            비교하기
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
       </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-building fa-5x my-2"></i>
-            <h4>용도</h4>
-            <h3 class="border-bottom pb-2">오피스</h3>
-            <h6 class="font-weight-light">aaaa</h6>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon">
+            <i class="fas fa-wind fa-5x"></i><br>
+            <strong>Cooling</strong>
           </div>
-        </div>
+          <h4>냉방 사용량</h4>
+          <h3 class="pb-2">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'cooling')">
+              {{ stat.cooling }}
+              ( {% ratio stat.cooling stat.kwh %} %)
+              <i class="fas fa-chart-line"></i>
+            </a>
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'cooling')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
       </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-expand fa-5x my-2"></i>
-            <h4>면적</h4>
-            <h3 class="border-bottom pb-2">{{ building_obj.total_area|floatformat:0|intcomma }}m2</h3>
-            <h6 class="font-weight-light">aaaa</h6>
-          </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-fire-alt fa-5x"></i><br>
+          <strong>Heating</strong>
         </div>
-      </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-cogs fa-5x my-2"></i>
-            <h4>관리사</h4>
-            <h3 class="border-bottom pb-2">{{ building_obj.fm }}</h3>
-            <h6 class="font-weight-light">aaaa</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col mb-2">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-cube fa-5x my-2"></i>
-            <h4>외장종류</h4>
-            <h3 class="border-bottom pb-2">{{ building_obj.get_wall_display }}</h3>
-            <h6 class="font-weight-light">aaaa</h6>
-          </div>
-        </div>
+        <h4>난방 사용량</h4>
+        <h3 class="pb-2">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'heating')">
+            {{ stat.heating|floatformat|intcomma }}
+            ( {% ratio stat.heating stat.kwh %} %)
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'heating')">
+            비교하기
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
       </div>
     </div>
-    
-    <div class="row py-2">
-      <div class="col">
-        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#statistics" aria-expanded="true" aria-controls="statistics">
-        에너지 통계
-        </button>
-      </div>
-    </div>
-    <div class="row collapse show" id="statistics">
-      <div class="col-12 mb-2">
-        <div class="p-2 bg-white centering zoom zoom-0">
-          <div class="text-center">
-            <i class="fas fa-chart-bar fa-5x my-2"></i><i class="fas fa-calendar-alt fa-2x ml-1"></i>
-            <h4>2019 누적 사용량</h4>
-            <h3 class="border-bottom pb-2">1000 (100%)</h3>
-            <h6 class="font-weight-light">2018 누적 사용량: aaaa</h6>
-          </div>
+
+    <div class="flex mt-2">
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-thermometer-three-quarters fa-5x"></i><br>
+          <strong>CDD</strong>
         </div>
+        <h4>냉방도일</h4>
+        <h3 class="pb-2">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'cdd')">
+            {{ stat.cdd|floatformat|intcomma }}
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawHistogramChart('name', 'cdd')">
+            비교하기
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
       </div>
-      <div class="col-6 mb-2 pr-0">
-        <div class="p-2 bg-white centering zoom zoom-1">
-          <div class="text-center">
-            <i class="fas fa-chart-bar fa-5x my-2"></i><i class="fas fa-calendar-minus fa-2x ml-1"></i>
-            <h4>평일 사용량</h4>
-            <h3 class="border-bottom pb-2">1000 (100%)</h3>
-            <h6 class="font-weight-light">2018 누적 사용량: aaaa</h6>
-          </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-thermometer-quarter fa-5x"></i><br>
+          <strong>HDD</strong>
         </div>
+        <h4>난방도일</h4>
+        <h3 class="pb-2">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'hdd')">
+            {{ stat.hdd|floatformat|intcomma }}
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawHistogramChart('name', 'hdd')">
+            비교하기
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
       </div>
-      <div class="col-6 mb-2">
-        <div class="p-2 bg-white centering zoom zoom-1">
-          <div class="text-center">
-            <i class="fas fa-chart-bar fa-5x my-2"></i><i class="fas fa-calendar-times fa-2x ml-1"></i>
-            <h4>휴일 사용량</h4>
-            <h3 class="border-bottom pb-2">1000 (100%)</h3>
-            <h6 class="font-weight-light">2018 누적 사용량: aaaa</h6>
-          </div>
+      <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+        <div class="my-5 icon">
+          <i class="fas fa-thermometer-half fa-5x"></i><br>
+          <strong>TDD</strong>
         </div>
-      </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-wind fa-2x my-2"></i>
-            <i class="fas fa-thermometer-three-quarters fa-5x my-2"></i>
-            <h4>냉방도일</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-fire-alt fa-2x my-2"></i>
-            <i class="fas fa-thermometer-quarter fa-5x my-2"></i>
-            <h4>난방도일</h4>
-            <h3 class="border-bottom pb-2">1000 (25%)</h3>
-            <h6 class="font-weight-light">냉방계수: 1.4</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col mb-2">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-wind fa-2x my-2"></i>
-            <i class="fas fa-fire-alt fa-2x my-2"></i>
-            <i class="fas fa-thermometer-half fa-5x my-2"></i>
-            <h4>도일 합계</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <div class="row py-2">
-      <div class="col">
-        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#useage-level" aria-expanded="true" aria-controls="useage-level">
-          에너지 소비 구성
-        </button>
-      </div>
-    </div>
-    <div class="row collapse show" id="useage-level">
-      <div class="col-12 mb-2">
-        <div class="p-2 bg-white centering zoom zoom-0">
-          <div class="text-center">
-            <i class="fas fa-bolt fa-5x my-2"></i>
-            <h4>전체 사용량</h4>
-            <h3 class="border-bottom pb-2">1000 (100%)</h3>
-            <h6 class="font-weight-light">aaaa</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-minus fa-5x my-2"></i>
-            <h4>기본 사용량</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-wind fa-5x my-2"></i>
-            <h4>냉방 사용량</h4>
-            <h3 class="border-bottom pb-2">1000 (25%)</h3>
-            <h6 class="font-weight-light">냉방계수: 1.4</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col mb-2">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-fire-alt fa-5x my-2"></i>
-            <h4>난방 사용량</h4>
-            <h3 class="border-bottom pb-2">1000 (25%)</h3>
-            <h6 class="font-weight-light">난방계수: 2.4</h6>
-          </div>
-        </div>
+        <h4>도일 합계</h4>
+        <h3 class="pb-2">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawMonthlyColumnChart('{{ building_object.pk }}', 'date', 'cdd, hdd')">
+            {{ stat.tdd|floatformat|intcomma }}
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h3>
+        <h5 class="font-weight-light">
+          <a class="decoration-none" href="javascript:void(0)" onclick="drawHistogramChart('name', 'tdd')">
+            비교하기
+            <i class="fas fa-chart-bar"></i>
+          </a>
+        </h5>
       </div>
     </div>
     
-    <div class="row py-2">
-      <div class="col">
-        <button class="btn btn-light btn-sm btn-block rounded-0 toggle-active text-left" type="button" data-toggle="collapse" data-target="#characteristic" aria-expanded="true" aria-controls="characteristic">
-          에너지 소비 특성
-        </button>
-      </div>
-    </div>
-    <div class="row collapse show" id="characteristic">
-      <div class="col-3 pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-              <div class="icon-stack">
-                <i class="fas fa-square icon-stack-5x"></i>
-                <i class="fas fa-bolt icon-stack-3x text-white"></i>
-              </div>
-            <h4>전체 사용량 밀도</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
+    <h3 class="text-gray border-bottom p-1 mt-5 mb-1 mr-1">
+      소비 특성 :
+      {% if stat %}
+        {{ stat.registration|since }} 분석
+        <a 
+          class="button decoration-none"
+          href="{% url 'buildinginfo:assessment' pk=building_object.pk %}" 
+          onclick="return confirm('분석을 시작합니다. 시간이 걸릴 수 있습니다.')"
+          style="display: inline;">
+          재실행
+        </a>
+        {% else %}
+        <a 
+        class="decoration-none button"
+        type="button"
+        href="{% url 'buildinginfo:assessment' pk=building_object.pk %}"
+        title="재실행"
+        onclick="return confirm('분석을 시작합니다. 시간이 걸릴 수 있습니다.')"
+        style="display: inline;">분석실행</a>
+      {% endif %}
+    </h3>
+
+    {% if stat %}
+      <div class="flex">
+        <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon icon-stack position-relative" style="height: 65px;">
+            <i class="fas fa-square icon-stack-5x"></i>
+            <i class="fas fa-bolt icon-stack-3x text-white"></i>
           </div>
+          <h4>
+            전체 사용량 밀도
+          </h4>
+          <h3 class="pb-2">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawPieChart('{{ building_object.pk }}', 'base_density, cooling_density, heating_density')">
+              {{ stat.total_density|floatformat|intcomma }}
+              <i class="fas fa-chart-pie"></i>
+            </a>
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'total_density')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
+        </div>
+        <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon icon-stack position-relative" style="height: 65px;">
+            <i class="fas fa-square icon-stack-5x"></i>
+            <i class="fas fa-minus icon-stack-3x text-white"></i>
+          </div>
+          <h4>
+            기본 사용량 밀도
+          </h4>
+          <h3 class="pb-2">
+            {{ stat.base_density|floatformat|intcomma }}
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'base_density')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
+        </div>
+        <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon icon-stack position-relative" style="height: 65px;">
+            <i class="fas fa-square icon-stack-5x"></i>
+            <i class="fas fa-wind icon-stack-3x text-white"></i>
+          </div>
+          <h4>
+            냉방 사용량 밀도
+          </h4>
+          <h3 class="pb-2">
+            {{ stat.cooling_density|floatformat|intcomma }}
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'cooling_density')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
+        </div>
+        <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon icon-stack position-relative" style="height: 65px;">
+            <i class="fas fa-square icon-stack-5x"></i>
+            <i class="fas fa-fire-alt icon-stack-3x text-white"></i>
+          </div>
+          <h4>
+            난방 사용량 밀도
+          </h4>
+          <h3 class="pb-2">
+            {{ stat.heating_density|floatformat|intcomma }}
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'heating_density')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
         </div>
       </div>
-      <div class="col-3 pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <div class="icon-stack">
-              <i class="fas fa-square icon-stack-5x"></i>
-              <i class="fas fa-minus icon-stack-3x text-white"></i>
-            </div>
-            <h4>기본 사용량 밀도</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
+      <div class="flex mt-2">
+        <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon">
+            <i class="fas fa-5x">&#8451;</i><br>
+            <strong>Balance</strong>
           </div>
+          <h4>
+            밸런스포인트
+          </h4>
+          <h3 class="pb-2">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawDailyScatterChart('{{ building_object.pk }}', 'temp', 'workingday', '{{ start }}')">
+              {{ stat.balance_point|floatformat|intcomma }} &#8451;
+              <i class="fas fa-chart-line"></i>
+            </a>
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawHistogramChart('name', 'balance_point')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
+        </div>
+        <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon">
+            <i class="fas fa-arrow-alt-circle-down fa-5x"></i><br>
+            <strong>Saving</strong>
+          </div>
+          <h4>
+            절감가능성(%)
+          </h4>
+          <h3 class="pb-2">
+            {{ stat.saving_potential|percentage|floatformat:2 }} %
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'saving_potential')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
+        </div>
+        <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon">
+            <i class="fas fa-wind fa-5x"></i><br>
+            <strong>Coef</strong>
+          </div>
+          <h4>
+            냉방계수
+          </h4>
+          <h3 class="pb-2">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawTrendline('{{ building_object.pk }}', 'temp', 'cooling')">
+              {{ stat.cooling_coef|floatformat|intcomma }} kWh/&#8451;
+              <i class="fas fa-chart-line"></i>
+            </a>
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'cooling_coef')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
+        </div>
+        <div class="item-flex-1-1-0 mr-2 p-5 bg-skyblue text-center zoom-2">
+          <div class="my-5 icon">
+            <i class="fas fa-fire-alt fa-5x"></i><br>
+            <strong>Coef</strong>
+          </div>
+          <h4>
+            난방계수
+          </h4>
+          <h3 class="pb-2">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawTrendline('{{ building_object.pk }}', 'temp', 'heating')">
+              {{ stat.heating_coef|floatformat|intcomma }} kWh/&#8451;
+              <i class="fas fa-chart-line"></i>
+            </a>
+          </h3>
+          <h5 class="font-weight-light">
+            <a class="decoration-none" href="javascript:void(0)" onclick="drawBarChart('name', 'heating_coef')">
+              비교하기
+              <i class="fas fa-chart-bar"></i>
+            </a>
+          </h5>
         </div>
       </div>
-      <div class="col-3 pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <div class="icon-stack">
-              <i class="fas fa-square icon-stack-5x"></i>
-              <i class="fas fa-wind icon-stack-3x text-white"></i>
-            </div>
-            <h4>냉방 사용량 밀도</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-3 mb-2">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <div class="icon-stack">
-              <i class="fas fa-square icon-stack-5x"></i>
-              <i class="fas fa-fire-alt icon-stack-3x text-white"></i>
-            </div>
-            <h4>난방 사용량 밀도</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-3 pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-5x my-2">&#8451;</i>
-            <h4>밸런스포인트</h4>
-            <h3 class="border-bottom pb-2">{{ analysis.0.balance_point }}</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-3 pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-arrow-alt-circle-down fa-5x my-2"></i>
-            <h4>절감가능성(%)</h4>
-            <h3 class="border-bottom pb-2">{{ analysis.0.saving_potential }}</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-3 pr-0">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-wind fa-4x align-top my-2"></i><i class="fas fa-5x my-2">&lrtri;</i>
-            <h4>냉방계수</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-      <div class="col-3 mb-2">
-        <div class="p-2 bg-white centering zoom zoom-2">
-          <div class="text-center">
-            <i class="fas fa-fire-alt fa-4x align-top my-2"></i><i class="fas fa-5x my-2">&lrtri;</i>
-            <h4>난방계수</h4>
-            <h3 class="border-bottom pb-2">1000 (50%)</h3>
-            <h6 class="font-weight-light">평균 사용량: 100</h6>
-          </div>
-        </div>
-      </div>
-    </div>
+    {% endif %}
   </div>
 </div>
 
+<!-- 구글차트 구현 -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="{% static 'buildinginfo/js/dashboard.js' %}" type="text/javascript"></script>
 <script>
-$('.toggle-active').click(function() {
-  $(this).toggleClass('active');
-})
+  let buildingName = '{{ building_object.name }}'
+  // var statistics = []
+  // dataPreparation('{{ building_object.pk }}')
+  // function dataPreparation (buildingId) {
+  //   url = "http://localhost:8000/buildinginfo/annual-statistics-data/" + buildingId + "/"
+  //   json = getjson(url)
+  //   statistics.push(json[0])
+  //   console.log(statistics)
+  // }
+  let buildingIdList = {{ building_list|to_list }}
 </script>
 
-<style>
-.zoom {
-  transition: transform .2s;
-}
-.zoom-0:hover {
-  transform: scale(1.008, 1.02);
-}
-.zoom-1:hover {
-  transform: scale(1.015, 1.02);
-}
-.zoom-2:hover {
-  transform: scale(1.02, 1.02);
-}
 
-.icon-stack {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 6em;
-  height: 6em;
-  /* line-height: 4em; */
-  margin: 0 auto;
-  vertical-align: middle;
-}
-.icon-stack-1x,
-.icon-stack-2x,
-.icon-stack-3x,
-.icon-stack-4x,
-.icon-stack-5x {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  text-align: center;
-}
-.icon-stack-1x {
-  line-height: inherit;
-}
-.icon-stack-2x {
-  font-size: 2em;
-}
-.icon-stack-3x {
-  font-size: 3em;
-}
-.icon-stack-4x {
-  font-size: 4em;
-}
-.icon-stack-5x {
-  font-size: 5em;
-}
-</style>
+
 
 {% endblock %}

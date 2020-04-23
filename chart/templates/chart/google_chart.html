@@ -2,473 +2,178 @@
 
 {% block content %}
 
+{% load static %}
+
 {% load chart_extras %}
 
-<div class="py-1" style="display: table; width: 100%;">
-
-  <div class="" style="display: table-cell; width: 250px; vertical-align: top;">
-
+  <div class="flex-column" id="side-bar" style="min-width: 250px; max-width: 250px;">
     <!-- 검색기능 구현 -->
-    <div class="mx-1 p-1 bg-white" style="height: 30px;">
-      <div class="" style="display: inline-block;">
-        <input type="input" class="form-control form-control-sm" id="input-search" placeholder="검색어를 입력하세요." autocomplete="off">
-        <label for="input-search" class="sr-only">Search Tree</label>
-      </div>
-      <div class ="input-group-append" style="display: inline-block;">
-        <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-search">초기화</button>
-      </div>
-    </div>
-    
-    <!-- 트리창 구역 -->
-    <div class="mx-1 bg-white" id="data-points-tree" style="height: calc(100vh - 130px); overflow: auto;" draggable="True" ondragstart="dragStart(event)" ondragend="dragEnd(event)">
-      <ul style="margin-top: 0;">
+    <input
+      type="input"
+      class="ml-1 my-1"
+      id="input-search"
+      placeholder="검색어를 입력하세요."
+      autocomplete="off"
+      style="margin-right: 0;"
+    />
+
+    <!-- 트리뷰 구역 -->
+    <div
+      class="item-flex-1-1-0 ml-1 bg-white"
+      id="data-points-tree"
+      style="overflow: auto;"
+      draggable="True"
+      ondragstart="dragStart(event)"
+      ondragend="dragEnd(event)"
+    >
+      <ul class="m-1">
         {% for building in building_object_list %}
-          <li>
-            <input class="branch" type="checkbox" id="{{ building.pk }}-{{ building.name }}" name="{{ building.pk }}-{{ building.name }}" value="{{ building.name }}" onclick="datapointCheck()" depth="0">
-            <label for="{{ building.pk }}-{{ building.name }}">
-              <span style="vertical-align: middle;">{{ building.name }}</span>
-            </label>
-            <a class="far fa-folder decoration-none" href="javascript:void(0)" onclick="showElement()" target-element="{{ building.pk }}-depth-1"></a>
-          </li>
-          <li class="hide" id="{{ building.pk }}-depth-1">
-            {% for model in model_list %}
+        <li>
+          <input
+            class="branch"
+            type="checkbox"
+            id="{{ building.pk }}-{{ building.name }}"
+            name="{{ building.pk }}-{{ building.name }}"
+            value="{{ building.name }}"
+            onclick="datapointCheck()"
+            depth="0"
+          />
+          <label for="{{ building.pk }}-{{ building.name }}">
+            <span style="vertical-align: middle;">{{ building.name }}</span>
+          </label>
+          <a
+            class="far fa-folder decoration-none"
+            href="javascript:void(0)"
+            onclick="showElement()"
+            target-element="{{ building.pk }}-depth-1"
+          ></a>
+        </li>
+        <li class="hide" id="{{ building.pk }}-depth-1">
+          {% for model in model_list %}
+          <ul>
+            <li>
+              <input
+                class="branch"
+                type="checkbox"
+                id="{{ building.pk }}-{{ building.name }}-{{ model | class_name }}"
+                name="{{ building.pk }}-{{ building.name }}"
+                value="{{ model | class_name }}"
+                onclick="datapointCheck()"
+                parent="{{ building.pk }}-{{ building.name }}"
+                depth="1"
+              />
+              <label for="{{ building.pk }}-{{ building.name }}-{{ model | class_name }}">
+                <span style="vertical-align: middle;">
+                  {{ model | class_name }}
+                </span>
+              </label>
+              <a
+                class="far fa-folder decoration-none"
+                href="javascript:void(0)"
+                onclick="showElement()"
+                target-element="{{ building.pk }}-{{ model | class_name }}-depth-2"
+              ></a>
+            </li>
+            <li class="hide" id="{{ building.pk }}-{{ model | class_name }}-depth-2">
               <ul>
+                {% for field in model|fields %}
                 <li>
-                  <input class="branch" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}" name="{{ building.pk }}-{{ building.name }}" value="{{ model|class_name }}" onclick="datapointCheck()" parent="{{ building.pk }}-{{ building.name }}" depth="1">
-                  <label for="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}">
-                    <span style="vertical-align: middle;">{{ model|class_name }}</span>
+                  <input
+                    class="endpoint"
+                    type="checkbox"
+                    id="{{ building.pk }}-{{ building.name }}-{{ model | class_name }}-{{ field }}"
+                    name="{{ building.pk }}-{{ building.name }}"
+                    value="{{ field }}"
+                    onclick="datapointCheck()"
+                    parent="{{ building.pk }}-{{ building.name }}-{{ model | class_name }}"
+                    depth="2"
+                  />
+                  <label for="{{ building.pk }}-{{ building.name }}-{{ model | class_name }}-{{ field }}">
+                    <span style="vertical-align: middle;">{{ field }}</span>
                   </label>
-                  <a class="far fa-folder decoration-none" href="javascript:void(0)" onclick="showElement()" target-element="{{ building.pk }}-{{ model|class_name }}-depth-2"></a>
                 </li>
-                <li class="hide" id="{{ building.pk }}-{{ model|class_name }}-depth-2">
-                  <ul>
-                  {% for field in model|fields %}
-                    <li>
-                      <input class="endpoint" type="checkbox" id="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}" name="{{ building.pk }}-{{ building.name }}" value="{{ field }}" onclick="datapointCheck()" parent="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}" depth="2">
-                      <label for="{{ building.pk }}-{{ building.name }}-{{ model|class_name }}-{{ field }}">
-                        <span style="vertical-align: middle;">{{ field }}</span>
-                      </label>
-                    </li>
-                  {% endfor %}
-                  </ul>
-                </li>
+                {% endfor %}
               </ul>
-            {% endfor %}
-          </li>
+            </li>
+          </ul>
+          {% endfor %}
+        </li>
         {% endfor %}
       </ul>
     </div>
-
   </div>
 
-  <div class="" style="display: table-cell;">
+  <div class="flex-xy-center" onclick="closeSideBar()" style="width: 10px;">
+    <i class="fas fa-caret-left"></i>
+  </div>
+
+  <div class="item-flex-1-1-auto flex-column" id="chart-area">
 
     <!-- 툴박스 -->
-    <div class="mx-1 p-1 bg-white" id="chart-tool-box" style="height: 50px;">
+    <div class="mr-1 p-1 bg-white" id="chart-tool-box" style="height: 50px;">
       <div style="display: inline-block;">
-        <input class="form-control datepicker" id="start-day" name="start-day" required type="text" style="width: 120px;" placeholder="시작일" onclick="datepicker()">
+        <input
+          class="datepicker"
+          id="startDay"
+          type="text"
+          required
+          type="text"
+          style="width: 120px;"
+          placeholder="시작일"
+          required
+          pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
+          onchange="updateCharts()"
+        />
       </div>
       <div style="display: inline-block;">
         ~
       </div>
       <div style="display: inline-block;">
-        <input class="form-control datepicker" id="end-day" name="end-day" required type="text" style="width: 120px;" placeholder="마지막일" onclick="datepicker()">
+        <input
+          class="datepicker"
+          id="endDay"
+          type="text"
+          required
+          type="text"
+          style="width: 120px;"
+          placeholder="마지막일"
+          required
+          pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
+          onchange="updateCharts()"
+        />
       </div>
       <div class="mx-1" style="display: inline-block; vertical-align: top;">
-        <button type="button" class="btn btn-success btn-sm ml-2" id="chart-reload" style="width: 80px; height: 4;">업데이트</button>
+        <input type="button" value="today" title="today" onclick="selectToday()" />
+        <input type="button" value="-1M" title="최근 한 달" onclick="selectPeriod(-1)" />
+        <input type="button" value="-6M" title="최근 6개월" onclick="selectPeriod(-6)" />
+        <input type="button" value="-1Y" title="최근 1년" onclick="selectPeriod(-12)" />
       </div>
       <div class="mx-1" style="display: inline-block; vertical-align: top;">
-        <button class="" id="sync" data-toggle="button" aria-pressed="false" autocomplete="off" title="차트동기화">
-          Sync
-        </button>
-        <button class="" id="addChart" title="차트추가">+</button>
-        <button class="" id="removeChart" title="차트삭제">-</button>
+        <input type="button" value="Sync" title="차트동기화" onclick="syncCharts()" />
+        <input type="button" value="차트추가" title="차트추가" onclick="addChartDiv()" />
       </div>
     </div>
 
     <!-- 차트 그리기 영역 -->
-    <div class="mx-1 centering bg-white" id="charts_container" style="height: calc(100vh - 150px);">
-      <div class="chart centering" id="chart-0">
-        <a class="draw-chart fas fa-chart-line fa-5x decoration-none" id="chart-0-draw" href="javascript:void(0)" onclick="test()" draggable="false"></a>
+    <div class="item-flex-1-1-auto flex-column mr-1 bg-white" id="charts-container">
+      <div class="chart item-flex-1-1-0 flex-xy-center" id="chart-0">
+        <a
+          class="draw-chart fas fa-plus-circle fa-2x decoration-none"
+          id="chart-0-draw"
+          href="javascript:void(0)"
+          onclick="appendChart()"
+          draggable="false"
+        ></a>
       </div>
     </div>
-
   </div>
 
-</div>
-
-<style>
-#data-points-tree ul, li {
-  list-style: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-#data-points-tree li {
-  margin-bottom: 3px;
-  padding-left: 12px;
-}
-
-#data-points-tree ul {
-  padding-left: 0;
-}
-
-#data-points-tree li > ul {
-  border-left: solid darkgray 1px;
-}
-
-#data-points-tree input, label {
-  cursor: pointer;
-}
-
-#data-points-tree .hide {
-  visibility: hidden;
-  max-height: 0;
-}
-
-#data-points-tree .show {
-  visibility: visible;
-  max-height: 999px;
-}
-
-#data-points-tree i {
-  cursor: pointer;
-}
-
-.bg-white {
-  background: white;
-}
-
-</style>
-
-<script>
-  function showElement() {
-    var thisEl = event.srcElement;
-    var targetId = thisEl.getAttribute('target-element');
-    var targetEl = document.getElementById(targetId);
-    var hide = targetEl.classList.contains('hide');
-    if (hide == true) {
-      targetEl.classList.remove('hide');
-      targetEl.classList.add('show');
-      thisEl.classList.remove('fa-folder');
-      thisEl.classList.add('fa-folder-open');
-    } else if (hide == false) {
-      targetEl.classList.remove('show');
-      targetEl.classList.add('hide');
-      thisEl.classList.remove('fa-folder-open');
-      thisEl.classList.add('fa-folder');
-    }
-  }
-
-  function getChildrenId() {
-    var thisEl = event.srcElement;
-  }
-
-  function datapointCheck() {
-    var thisEl = event.srcElement;
-    var name = thisEl.getAttribute('name');
-    var checkPoints = document.getElementsByName(name);
-    // branch를 클릭하면 하위의 모든 체크박스가 true 또는 false
-    if (thisEl.classList.contains('branch')) {
-      if (thisEl.checked == true) {
-        for (var i=0; i<checkPoints.length; i++) {
-          var point = checkPoints[i]
-          if (point.id.match(thisEl.id)) {
-            point.checked = true
-          }
-        }
-      } else if (thisEl.checked == false) {
-        for (var i=0; i<checkPoints.length; i++) {
-          var point = checkPoints[i]
-          if (point.id.match(thisEl.id)) {
-            point.checked = false
-          }
-        }
-      }
-    }
-    // 상위의 체크박스가 true 또는 false가 됨
-    var chk = thisEl
-    var depth = chk.getAttribute('depth')
-    for (var i=0; i<depth; i++) {
-      if (chk.getAttribute('parent')) {
-        var parentName = chk.getAttribute('parent')
-        var lenUnchked = document.querySelectorAll('input[parent="' + parentName + '"][type="checkbox"]:not(:checked)').length
-        var parentEl = document.getElementById(parentName)
-        if (lenUnchked == 0) {
-          parentEl.checked = true
-        } else if (lenUnchked > 0) {
-          parentEl.checked = false
-        }
-        chk = parentEl
-      }
-    }
-  }
-
-</script>
+<!-- 트리뷰 구현 -->
+<link rel="stylesheet" href="{% static 'chart/css/treeview.css' %}" />
+<script type="text/javascript" src="{% static 'chart/js/treeview.js' %}"></script>
 
 <!-- 구글차트 구현 -->
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-<script>
-  startDate = '2018-01-01';
-  endDate = '2018-01-30';
-  // pointList = ['23-sam-Ismart-kWh', '23-sam-Ismart-kW_peak', '23-sam-Ismart-kVarh_lag']
-
-  // Load the Visualization API and the corechart package.
-  google.charts.load('current', {'packages':['corechart']});
-
-  // Set a callback to run when the Google Visualization API is loaded.
-  // google.charts.setOnLoadCallback(drawChart);
-
-
-  var endpoints = function getEndpoints() {
-    var checks = document.getElementsByClassName('endpoint');
-    var result = [];
-    for (var i=0; i<checks.length; i++) {
-      if (checks[i].checked) {
-        result.push(checks[i].id);
-      };
-    };
-    return result;
-  };
-
-  function test() {
-    console.log(endpoints());
-  }
-
-  // Callback that creates and populates a data table,
-  // instantiates the pie chart, passes in the data and
-  // draws it.
-  function getChartData(startDate, endDate, pointList) {
-    var startDay = document.getElementById('start-day').value;
-    var endDay = document.getElementById('end-day').value;
-    var totalJson = {};
-    var keys = [];
-    for (var i=0; i<pointList.length; i++) {
-      jsonUrl = 'http://localhost:8000/chart/google-chart-data/?start-day=' + startDate + '&end-day=' + endDate + '&datapoint=' + pointList[i];
-      console.log(jsonUrl);
-      json = getjson(jsonUrl);
-      totalJson[pointList[i]] = json;
-      keys = keys.concat(Object.keys(json['data']));
-    };
-    var uniqueKeys = Array.from(new Set(keys));
-
-    var chartData = {};
-    chartData['cols'] = [{'id': 'timestamp', 'label': 'timestamp', 'type': 'date'}];
-    chartData['rows'] = [];
-    for (var i=0; i<Object.keys(totalJson).length; i++) {
-      buildingKey = Object.keys(totalJson)[i];
-      chartData['cols'].push(totalJson[buildingKey]['prop']);
-    };
-
-    chartData['rows'] = [];
-    for (var i=0; i<uniqueKeys.length; i++) {
-      var dateKey = uniqueKeys[i];
-      var newRow = {'c': [{'v': dateKey}]}
-      for(var j=0; j<Object.keys(totalJson).length; j++) {
-        buildingKey = Object.keys(totalJson)[j];
-        if (typeof totalJson[buildingKey]['data'][dateKey] != 'undefined') {
-          newRow['c'].push({'v': totalJson[buildingKey]['data'][dateKey]});
-        } else {
-          newRow['c'].push({'v': null});
-        };
-      };
-      chartData['rows'].push(newRow);
-    };
-
-    return chartData;
-  };
-
-  function drawChart(chartData) {
-    // Create the data table.
-    var chartData = getChartData(startDate, endDate, pointList);
-    var data = new google.visualization.DataTable(chartData);
-    console.log(chartData);
-
-    // Set chart options
-    var options = {
-      'title': 'How Much Pizza I Ate Last Night',
-      'width': 1000,
-      'height': 800,
-      interpolateNulls: true,
-      crosshair: {
-        trigger: 'both',
-        orientation: 'vertical',
-      },
-    };
-
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-    chart.draw(data, options);
-  }
-
-
-
-</script>
-
- 
-<script type="text/javascript">
-
-  function dateInput() {
-    var targetId = document.getElementById('datepicker').getAttribute('targetId')
-    var targetEl = document.getElementById(targetId)
-    document.querySelectorAll('#datepicker td.day')
-    .forEach(e => e.addEventListener("click", function() {
-      var tbCalendarYM = document.getElementById("tbCalendarYM")
-      var year = tbCalendarYM.getAttribute('year')
-      var month = tbCalendarYM.getAttribute('month')
-      var day = e.innerText
-      targetEl.value = year + '-' + month + '-' + day
-      popup.remove()
-    }));
-  }
-
-  function datepicker() {
-    var thisEl = event.srcElement
-    var popup = document.createElement('div')
-    document.body.appendChild(popup)
-    popup.setAttribute('id', 'popup')
-    popup.style.position = 'absolute'
-    popup.style.top = 0
-    popup.style.left = 0
-    popup.style.width = '100%'
-    popup.style.height = '100%'
-
-    popup.innerHTML = htmlCalendar()
-    updateCal()
-    var pos = thisEl.getBoundingClientRect()
-    var cal = document.getElementById('datepicker')
-    cal.setAttribute('targetId', thisEl.getAttribute('id'))
-    cal.style.position = 'absolute'
-    cal.style.background = 'white'
-    cal.style.top = pos.bottom + 'px'
-    cal.style.left = pos.left + 'px'
-
-    dateInput()
-
-    popup.addEventListener('click', function(e) {
-      var clickInside = cal.contains(e.target)
-      if (!clickInside) {
-        popup.remove()
-      }
-    })
-  }
-
-  function htmlCalendar() {
-    var cal = '<table id="datepicker">'
-    cal += '<tbody>'
-    cal += '<tr id="toolbar">'
-    cal += '<td onclick="prevYear()">&lang;&lang;</td>'
-    cal += '<td onclick="prevMonth()">&lang;</td>'
-    cal += '<td align="center" id="tbCalendarYM" colspan="3" year="yyyy" month="mm">yyyy년 m월</td>'
-    cal += '<td onclick="nextMonth()">&rang;</td>'
-    cal += '<td onclick="nextYear()">&rang;&rang;</td>'
-    cal += '</tr>'
-    cal += '<tr>'
-    cal += '<td class="weekday">일</td>'
-    cal += '<td>월</td>'
-    cal += '<td>화</td>'
-    cal += '<td>수</td>'
-    cal += '<td>목</td>'
-    cal += '<td>금</td>'
-    cal += '<td>토</td>'
-    cal += '</tr>'
-    cal += '</tbody>'
-    cal += '</table>'
-    return cal
-  }
-
-  function prevMonth() {
-    var tbCalendarYM = document.getElementById("tbCalendarYM")
-    var year = tbCalendarYM.getAttribute('year')
-    var month = tbCalendarYM.getAttribute('month') - 1
-    var date = new Date(year, month - 1)
-    updateCal(date)
-    dateInput()
-  }
-
-  function prevYear() {
-    var tbCalendarYM = document.getElementById("tbCalendarYM")
-    var year = tbCalendarYM.getAttribute('year')
-    var month = tbCalendarYM.getAttribute('month') - 1
-    var date = new Date(year - 1, month)
-    updateCal(date)
-    dateInput()
-  }
-
-  function nextMonth() {
-    var tbCalendarYM = document.getElementById("tbCalendarYM")
-    var year = tbCalendarYM.getAttribute('year')
-    var month = tbCalendarYM.getAttribute('month') - 1
-    var date = new Date(year, month + 1)
-    updateCal(date)
-    dateInput()
-  }
-
-  function nextYear() {
-    var tbCalendarYM = document.getElementById("tbCalendarYM")
-    var year = parseInt(tbCalendarYM.getAttribute('year')) //convert string to int
-    var month = tbCalendarYM.getAttribute('month') - 1
-    var date = new Date(year + 1, month)
-    updateCal(date)
-    dateInput()
-  }
-
-  function updateCal(date) {
-    var date = date || new Date()
-    var today = new Date()
-    var doMonth = new Date(date.getFullYear(), date.getMonth(), 1)
-    var lastDate = new Date(date.getFullYear(), date.getMonth()+1, 0)
-    var tbCalendar = document.getElementById("datepicker")
-    var tbCalendarYM = document.getElementById("tbCalendarYM")
-    tbCalendarYM.innerHTML = date.getFullYear() + "년 " + (date.getMonth() + 1) + "월"
-    tbCalendarYM.setAttribute('year', date.getFullYear())
-    tbCalendarYM.setAttribute('month', date.getMonth() + 1)
-
-    while (tbCalendar.rows.length > 2) {
-      tbCalendar.deleteRow(tbCalendar.rows.length-1)
-    }
-    var row = null
-    row = tbCalendar.insertRow()
-    var cnt = 0
-    for (i=0; i<doMonth.getDay(); i++) {
-      cell = row.insertCell()
-      cnt = cnt + 1
-    }
-    for (i=1; i<=lastDate.getDate(); i++) {
-      cell = row.insertCell()
-      cell.innerHTML = i
-      cell.classList.add('day')
-      cnt = cnt + 1
-      if (cnt % 7 == 1) { // Sunday
-        cell.innerHTML = "<font color=#F79DC2>" + i
-      }
-      if (cnt % 7 == 0){ // Saturday
-        cell.innerHTML = "<font color=skyblue>" + i
-        row = tbCalendar.insertRow()
-      }
-      if (date.getFullYear() == today.getFullYear() && date.getMonth() == today.getMonth() && i == today.getDate()) { // today
-        cell.bgColor = "#FAF58C"
-      }
-    }
-  }
-
-</script>
-
-<style>
-#datepicker {
-  border: solid darkgray 1px; 
-}
-#datepicker td {
-  text-align: center;
-}
-#datepicker td.day:hover, #toolbar td:hover {
-  color: white;
-  background: gray;
-  cursor: pointer;
-}
-
-</style>
+<script type="text/javascript" src="{% static 'chart/js/google_chart_custom.js' %}"></script>
 
 {% endblock %}

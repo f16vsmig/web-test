@@ -2,62 +2,59 @@
 
 {% block content %}
 
-<div class="py-2" style="display: table; width: 100%; min-height: calc(100vh  - 85px);">
-    <div class="align-top pr-2 border-right" style="display: table-cell; width: 180px;">
-        {% include 'buildinginfo/sidebar.html' %}
-    </div>
-    <div class="mx-auto align-top px-2 m-2" style="display: table-cell">
-        <div class="row align-items-center justify-content-center w-100 h-100 pt-5 pb-5">
-            <div class="col-md-6">
-                <form method="post" action="." enctype="multipart/form-data">{% csrf_token %}
-                    {% if form.errors %}
-                        <div class="alert alert-danger" role="alert">
-                            {% for error in form.errors.values %}
-                                {{ error|striptags }}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% if massages %}
-                        <div class="alert alert-danger" role="alert">
-                            {% for error in messages %}
-                                {{ error|striptags }}
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                    {% for field in form %}
-                        <div class="form-group row justify-content-md-center">
-                            <label for="{{ field.auto_id }}" class="col-4 col-form-label">{{ field.label_tag }}</label>
-                            <div class="col-8">
-                                {{ field }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                    <input class="btn btn-dark btn-lg btn-block" type="submit" value="저장">
-                </form>
-            </div>
+<div class="item-flex-1-1-auto flex-x-center">
+  <div class="bg-white p-3" style="width: 350px;">
+    <h2>새 빌딩 등록하기</h2>
+    <form id="new-building-form" method="post" action="." enctype="multipart/form-data">{% csrf_token %}
+      {% if form.errors %}
+      <div class="alert alert-danger" role="alert">
+        {% for error in form.errors.values %}
+          {{ error|striptags }}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      {% if massages %}
+      <div class="alert alert-danger" role="alert">
+        {% for error in messages %}
+          {{ error|striptags }}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      {% for field in form %}
+      <div class="flex-x-between flex-y-center mt-3">
+        {{ field.errors }}
+        {{ field.label_tag }} {{ field }}
+      </div>
+      {% endfor %}
+
+      {% if object.photo %}
+        <img src="{{ object.photo.url }}" style="max-height: 80px; max-width: 80px;" alt="빌딩 사진">  
+      {% endif %}
+      <div class="flex mt-3">
+        <button
+          class="item-flex-1-1-auto button bg-blue"
+          type="submit"
+          onclick="
+            {% if 'new' in request.path %}
+              return confirm('새로운 빌딩을 저장합니다.')
+            {% elif 'update' in request.path %}
+              return confirm('변경사항을 저장합니다.')
+            {% endif %}
+            "
+        >저장</button>
+      </div>
+    </form>
+    {% if 'update' in request.path %}
+      <form method="POST" action="{% url 'buildinginfo:building_delete' pk=object.pk %}">{% csrf_token %}
+        <div class="flex mt-1">
+          <button class="item-flex-1-1-auto button bg-red" type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
         </div>
-    </div>
+      </form>
+    {% endif %}
+  </div>
 </div>
 
-<script>
-    $(function () {
-    $('.datepicker').datetimepicker({
-        dayViewHeaderFormat: 'YYYY-MM',
-        format: "YYYY-MM-DD",
-            sideBySide: true,
-            icons: {
-                time: 'fa fa-clock-o',
-                date: 'fa fa-calendar',
-				up: "fa fa-chevron-circle-up",
-                down: "fa fa-chevron-circle-down",
-                next: 'fa fa-chevron-circle-right',
-                previous: 'fa fa-chevron-circle-left',
-                today: 'fa fa-crosshairs',
-                clear: 'fa fa-trash-o',
-                close: 'fa fa-times'
-            },
-        });
-    });
-</script>
 
 {% endblock %}

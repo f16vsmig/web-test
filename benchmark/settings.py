@@ -1,4 +1,5 @@
-import os, json
+import os
+import json
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -11,10 +12,11 @@ AUTH_USER_MODEL = 'account.User'
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-secret_file = os.path.join(BASE_DIR, 'secrets.json') # secrets.json 파일 위치를 명시
+secret_file = os.path.join(BASE_DIR, 'secrets.json')  # secrets.json 파일 위치를 명시
 
 with open(secret_file) as f:
     secrets = json.loads(f.read())
+
 
 def get_secret(setting, secrets=secrets):
     """비밀 변수를 가져오거나 명시적 예외를 반환한다."""
@@ -23,6 +25,7 @@ def get_secret(setting, secrets=secrets):
     except KeyError:
         error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
+
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
@@ -41,14 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.humanize', # 템플릿에서 1000자리 콤마 추가
+    'django.contrib.humanize',  # 템플릿에서 1000자리 콤마 추가
     'account',
     'buildinginfo',
     'scheduler',
-    # 'scheduler.templatetags',
     'chart',
     'board',
-    # 'board.templatetags'
+    'tasks',
 ]
 
 MIDDLEWARE = [
@@ -74,7 +76,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media', # MEDIA_URL 사용을 위해 등록
+                'django.template.context_processors.media',  # MEDIA_URL 사용을 위해 등록
             ],
         },
     },
@@ -145,7 +147,7 @@ LOGOUT_REDIRECT_URL = '/'
 
 ### Celery CONFIGURATION ###
 
-CELERY_BROKER_URL = 'amqp://f16vsmig:dongju2016@localhost:5672'
+CELERY_BROKER_URL = 'amqp://f16vsmig:dongju20!^@localhost:5672'
 CELERY_IMPORTS = ('buildinginfo.tasks', )
 # CELERY_RESULT_BACKEND = 'django-cache'
 
